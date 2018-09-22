@@ -1,0 +1,40 @@
+.sidebar {
+    position: fixed;
+    width: 232px;
+    height: 100vh;
+    right: 16px;
+    top: 0;
+}
+
+.sidebar .buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-flow: wrap;
+    height: 43px;
+    overflow: hidden;
+    position: relative;
+    padding: 10px 10px 0 10px;
+    border-bottom: 1px solid lightgrey;
+}
+.sidebar .buttons .button {
+    padding: 5px;
+    width: calc(20% - 10px);
+    height: 35px;
+}
+
+.sidebar .buttons .button svg {
+    width: 20px;
+    height: 20px;
+    fill: #737373;
+}
+
+.sidebar .buttons .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.sidebar h2 {
+    padding: 20px 10px 10px;
+}

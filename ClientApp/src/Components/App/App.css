@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:200,400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Roboto, Helvetica, sans-serif;
+  font-weight: 200;
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6,
+.markdown-preview strong
+{
+  font-weight: 700;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #737373;
+  font-weight: 200;
+}
+
+.scroller {
+  background-color: #e2e2e2;
+}

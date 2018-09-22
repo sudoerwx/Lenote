@@ -1,0 +1,116 @@
+.editor,
+.markdown-preview {
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+    background-color: #f7f7f7;
+}
+
+.editor .img span {
+    display: inline-block !important;
+    overflow: hidden !important;
+    padding-left: 15px !important;
+    width: 15px !important;
+    height: 20px !important;
+}
+.editor .img span::before {
+    content: ' ...';
+    border-radius: 5px;
+    display: block;
+    margin-left: -13px;
+    margin-top: -5px;
+    background-color: #ddd;
+}
+
+.markdown-preview {
+    width: calc(100vw - 561px);
+    min-height: calc(100vh - 249px);
+    padding: 50px 40px 200px;
+    margin: 0 auto;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.73);
+    font-family: Roboto, Helvetica, sans-serif;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: normal
+}
+
+.burger {
+    display: none;
+}
+
+@media (max-width: 1000px) {
+    .editor {
+        width: calc(100vw - 137px);
+        margin: 0;
+    }
+
+    .burger {
+        display: block;
+        position: fixed;
+        top: 10px;
+        right: 28px;
+        width: 32px;
+        height: 32px;
+        z-index: 1;
+        padding-left: 0;
+        padding-top: 0;
+        transform: translateX(16px);
+        transition: transform 200ms;
+    }
+
+    .burger svg {
+        width: 32px;
+        height: 32px;
+        fill: #737373;
+    }
+
+    .burger:hover {
+        background-color: transparent;
+        transition: transform 200ms;
+    }
+
+    .burger.is-opened {
+        transform: translateX(-153px);
+    }
+
+    .sidebar {
+        background: #e5e5e5;
+        transform: translateX(248px);
+        transition: transform 200ms;
+    }
+
+    .sidebar.is-opened {
+        padding-top: 50px;
+        transform: translateX(16px);
+        z-index: 0;
+        background: #e5e5e5;
+        transition: transform 140ms;
+    }
+
+    .buttons {
+        justify-content: space-around !important;
+    }
+
+    .normal-size-for-mob {
+
+    }
+
+    .only-desktop {
+        display: none;
+    }
+
+    .markdown-preview {
+        width: calc(100vw - 140px);
+        min-height: calc(100vh - 150px);
+        padding: 50px 40px 200px;
+        left:0;
+        margin: 0 auto;
+        font-size: 18px;
+        color: rgba(0, 0, 0, 0.73);
+        font-family: Roboto, Helvetica, sans-serif;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        word-break: normal
+    }
+}
+
