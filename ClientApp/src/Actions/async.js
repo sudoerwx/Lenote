@@ -6,7 +6,7 @@ import {
     requestFileList,
     requestSaveFile
 } from './sync';
-//import mockFetch from "../mockFetch";
+import fetch from "../mockFetch";
 
 export const fetchFileList = userInfo => dispatch => {
     dispatch(requestFileList());
