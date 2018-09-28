@@ -1,17 +1,29 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const fs = require('fs');
 
-/* GET users listing. */
-router.get('/:id', function(req, res) {
-    res.send(req.params.id);
+
+router.get('/:id/:file', function(req, res) {
+    fs.readFile(`../userfiles/${req.params.id}/${req.params.file}.md`, function (err, data) {
+        if (err)
+            res.sendStatus(404);
+        if (data)
+            res.send(data);
+    });
 });
 
-router.post('/', function(req, res) {
-    res.send('post');
+router.post('/:id/:file', function(req, res) {
+    fs.writeFile(`../userfiles/${req.params.id}/${req.params.file}.md`, req.body, function (err) {
+        if (err) throw err;
+        if(!err) res.sendStatus(200);
+    });
 });
 
-router.delete('/:id', function(req, res) {
-    res.send(req.params.id);
+router.delete('/:id/:file', function(req, res) {
+    fs.unlink(`../userfiles/${req.params.id}/${req.params.file}.md`, function (err) {
+        if (err) throw err;
+        if(!err) res.sendStatus(200);
+    });
 });
 
 module.exports = router;

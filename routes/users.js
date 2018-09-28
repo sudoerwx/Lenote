@@ -5,11 +5,12 @@ const db = require('../database/db');
 
 /* GET users listing. */
 router.get('/:id', function(req, res) {
-    res.send(req.params.id);
+    res.type('json');
+    res.send(db.findUser(req.params.id).toJSON());
 });
 
 router.post('/', function(req, res) {
-    res.send('post');
+    db.createUser(req.body).then(res.sendStatus(200));
 });
 
 router.delete('/:id', function(req, res) {
