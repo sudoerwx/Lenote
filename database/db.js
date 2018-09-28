@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const users = require('./Schema/userSchema');
 
 export function setUPConnection() {
-    mongoose.connect('mongodb://localhost/users');
+    mongoose.connect('mongodb://localhost/users',{ useNewUrlParser: true });
 }
 
 export function deleteUser(id) {
