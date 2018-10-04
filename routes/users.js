@@ -5,16 +5,25 @@ const db = require('../database/db');
 
 /* GET users listing. */
 router.get('/:id', function(req, res) {
-    res.type('json');
-    res.send(db.findUser(req.params.id).toJSON());
+   // db.findUser(req.params.id).then(console.log);
+    db.findUser(req.params.id,err=>res.sendStatus(err))
+        .then(response => res.send(response));
 });
 
 router.post('/', function(req, res) {
-    db.createUser(req.body).then(res.sendStatus(200));
+    db.createUser(req.body,err=>{
+        if(err)res.sendStatus(500);
+        else
+            res.sendStatus(200);
+    });
 });
 
 router.delete('/:id', function(req, res) {
-    db.deleteUser(req.params.id).then(res.sendStatus(200));
+    db.deleteUser(req.params.id,err=>{
+        if(err)res.sendStatus(500);
+        else
+            res.sendStatus(200);
+    });
 });
 
 
