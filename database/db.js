@@ -2,16 +2,16 @@ const mongoose = require('mongoose');
 const users = require('./Schema/userSchema');
 
 export function setUPConnection() {
-    mongoose.connect('mongodb://localhost/users',{ useNewUrlParser: true });
+    mongoose.connect('mongodb://test:test_pass_1234@ds121343.mlab.com:21343/lenote-users',{ useNewUrlParser: true });
+    }
+
+export function deleteUser(id,callback) {
+    return users.deleteOne({ _id: id },err=>callback(err));
 }
 
-export function deleteUser(id) {
-    return users.remove({ googleId: id }, function (err) {});
-}
-
-export function createUser(data) {
+export function createUser(data,callback) {
     const user = new users({
-        googleId: data.googleId,
+        _id: data.googleId,
         name: data.name,
         secondName: data.secondName,
         email: data.email,
@@ -19,9 +19,15 @@ export function createUser(data) {
         secondFiles: data.secondFiles
     });
 
-    return user.save();
+    return user.save(err=>callback(err));
 }
 
-export function findUser(id) {
-    return users.find({ googleId: id});
-}
+export const findUser = (id,callback) => new Promise(resolve => {
+    users.findOne({_id:id},{__v:0}, function (err, test) {
+        if(err) callback(500);
+        if(test==null)
+            callback(404);
+        else
+            resolve(test);
+    })
+})
