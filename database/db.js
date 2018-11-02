@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const users = require('./Schema/userSchema');
-
+const keys = require('../config/keys');
 export function setUPConnection() {
-    mongoose.connect('mongodb://test:test_pass_1234@ds121343.mlab.com:21343/lenote-users',{ useNewUrlParser: true });
+    mongoose.connect(keys.mongodb.dbURI,{ useNewUrlParser: true });
     }
 
 export function deleteUser(id,callback) {
@@ -15,6 +15,7 @@ export function createUser(data,callback) {
         name: data.name,
         secondName: data.secondName,
         email: data.email,
+        photoURI:data.photoUri,
         ownFiles: data.ownFiles,
         secondFiles: data.secondFiles
     });
