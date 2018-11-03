@@ -1,3 +1,5 @@
+
+//keeys for all services
 module.exports ={
 	google:{
 		clientID:'834769665885-tmbecotsp8f8452m7at4aqgf58l2n852.apps.googleusercontent.com',
