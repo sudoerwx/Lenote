@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const users = require('./Schema/userSchema');
 const keys = require('../config/keys');
+
+
 export function setUPConnection() {
     mongoose.connect(keys.mongodb.dbURI,{ useNewUrlParser: true });
     }
@@ -8,10 +10,10 @@ export function setUPConnection() {
 export function deleteUser(id,callback) {
     return users.deleteOne({ _id: id },err=>callback(err));
 }
-
+/*
 export function createUser(data,callback) {
     const user = new users({
-        _id: data.googleId,
+        googleId: data.googleId,
         name: data.name,
         secondName: data.secondName,
         email: data.email,
@@ -21,7 +23,7 @@ export function createUser(data,callback) {
     });
 
     return user.save(err=>callback(err));
-}
+}*/
 
 export const findUser = (id,callback) => new Promise(resolve => {
     users.findOne({_id:id},{__v:0}, function (err, test) {
