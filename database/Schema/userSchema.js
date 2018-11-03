@@ -1,13 +1,18 @@
 const mongoose = require('mongoose');
-
+const file = new mongoose.Schema({
+	name:String,
+	nameHash:String,
+	ownerId:String,
+	ownerName:String
+},{ _id: false });
 const userSchema = new mongoose.Schema({
-    _id: {type:Number, required: true},
+    _id: {type:String, required: true},
     name: String,
     secondName: String,
     email: String,
     photoURI:String,
-    ownFiles: Array,
-    secondFiles: Array
+    ownFiles: [file],
+    secondFiles: [file]
 });
 const User = mongoose.model('user',userSchema);
 

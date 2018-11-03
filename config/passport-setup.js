@@ -1,20 +1,23 @@
 const passport = require('passport');
 const GoogleStrategy = require("passport-google-oauth20");
+const md5 = require('md5');
 const User = require('../database/Schema/userSchema.js');
+const File = require('../database/Schema/userSchema.js');
 const keys = require('./keys');
 
+
+
+//login serializer
 passport.serializeUser((user, done) =>{
     done(null, user._id);
-    // if you use Model.id as your idAttribute maybe you'd want
-    // done(null, user.id);
 });
-
+//login deserializer
 passport.deserializeUser((id, done) =>{
   User.findById(id, (err, user) =>{
     done(err, user);
   });
 });
-
+//google strategy user find or create
 passport.use(
 	new GoogleStrategy({
     clientID: keys.google.clientID,
@@ -33,7 +36,12 @@ passport.use(
         secondName: profile.name.familyName,
         email: profile.emails[0].value,
         photoURI:profile.photos[0].value,
-        ownFiles: [],
+        ownFiles: [{
+			name:"Welcome",
+			nameHash:md5('Welcome'),
+			ownerId:profile.id,
+			ownerName:profile.name.givenName
+		},],
         secondFiles: []
     	}).save().then((newUser)=>{
     		console.log('new user created'+newUser);
