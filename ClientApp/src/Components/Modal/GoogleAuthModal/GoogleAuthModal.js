@@ -15,9 +15,6 @@ class GoogleAuthModal extends Component {
         }
     }
 
-    componentDidMount() {
-        setTimeout(() => this.setState({ active: false }), 3000)
-    }
 
     render() {
         return (
