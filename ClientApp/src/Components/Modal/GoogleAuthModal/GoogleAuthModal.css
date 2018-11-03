@@ -4,6 +4,8 @@
 }
 
 .google-login-button {
+    display: block;
+    text-decoration: none;
     height: 40px;
     min-width: 220px;
     padding: 0 24px 0 42px;
