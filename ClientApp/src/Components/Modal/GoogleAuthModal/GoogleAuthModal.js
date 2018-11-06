@@ -1,20 +1,20 @@
 import React, { Component } from "react"
 import Modal from "../Modal"
-import { GoogleLogin } from "react-google-login"
 import { connect } from "react-redux"
 import "./GoogleAuthModal.css"
-import { fetchFileList } from "../../../Actions/async"
-import mockFetch from "../../../mockFetch"
-import { receiveUserInfo, requestUserInfo } from "../../../Actions/sync"
+import { checkLogin } from "../../../Actions/userActions"
 
 class GoogleAuthModal extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            active: true
+            active: false
         }
     }
 
+    componentDidMount() {
+        this.props.checkLogin()
+    }
 
     render() {
         return (
@@ -56,53 +56,53 @@ const mapStateToProps = () => ({})
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onSuccess: response => {
-            if (!response.profileObj) {
-                return
-            }
-            const GoogleId = response.googleId
-            const Name = response.profileObj.name
-            const Mail = response.profileObj.email
-            const userInfo = {
-                GoogleId,
-                Name,
-                Mail
-            }
-            dispatch(
-                receiveUserInfo({
-                    ...userInfo,
-                    profileObj: response.profileObj
-                })
-            )
-            dispatch(fetchFileList(userInfo))
-        },
-        onFailure: () => {
-            dispatch(requestUserInfo())
-            mockFetch("/GoogleAuth").then(response => {
-                dispatch(receiveUserInfo(response))
-                if (!response.profileObj) {
-                    return
-                }
-                const GoogleId = response.googleId
-                const Name = response.profileObj.name
-                const Mail = response.profileObj.email
-                const userImage = response.profileObj.userImage
-                const userInfo = {
-                    GoogleId,
-                    Name,
-                    Mail
-                }
-
-                const fullUserInfo = {
-                    GoogleId,
-                    Name,
-                    Mail,
-                    userImage
-                }
-                dispatch(receiveUserInfo(fullUserInfo))
-                dispatch(fetchFileList(userInfo))
-            })
-        }
+        checkLogin: () => dispatch(checkLogin())
+        // onSuccess: response => {
+        //     if (!response.profileObj) {
+        //         return
+        //     }
+        //     const GoogleId = response.googleId
+        //     const Name = response.profileObj.name
+        //     const Mail = response.profileObj.email
+        //     const userInfo = {
+        //         GoogleId,
+        //         Name,
+        //         Mail
+        //     }
+        //     dispatch(
+        //         receiveUserInfo({
+        //             ...userInfo,
+        //             profileObj: response.profileObj
+        //         })
+        //     )
+        //     dispatch(fetchFileList(userInfo))
+        // },
+        // onFailure: () => {
+        //     dispatch(requestUserInfo())
+        //     mockFetch("/GoogleAuth").then(response => {
+        //         dispatch(receiveUserInfo(response))
+        //         if (!response.profileObj) {
+        //             return
+        //         }
+        //         const GoogleId = response.googleId
+        //         const Name = response.profileObj.name
+        //         const Mail = response.profileObj.email
+        //         const userImage = response.profileObj.userImage
+        //         const userInfo = {
+        //             GoogleId,
+        //             Name,
+        //             Mail
+        //         }
+        //         const fullUserInfo = {
+        //             GoogleId,
+        //             Name,
+        //             Mail,
+        //             userImage
+        //         }
+        //         dispatch(receiveUserInfo(fullUserInfo))
+        //         dispatch(fetchFileList(userInfo))
+        //     })
+        // }
     }
 }
 

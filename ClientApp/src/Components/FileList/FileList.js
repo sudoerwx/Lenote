@@ -13,14 +13,14 @@ class FileList extends Component {
                 <h2>{this.props.children}</h2>
                 <hr color='lightgrey' size='1' />
                 {
-                    this.props.fileList.map(e => {
+                    this.props.fileList.map(file => {
                         return (
-                            e.file && <FileListItem
-                                name={e.file.name}
+                            file && <FileListItem
+                                name={file.name}
                                 current={this.props.current}
-                                id={e.id}
-                                onClick={(id) => this.props.onClick(id)}
-                                key={e.id}
+                                id={file.nameHash}
+                                onClick={() => this.props.onClick(file.nameHash)}
+                                key={file.nameHash}
                             />
                         )
                     }).reverse()
@@ -43,7 +43,6 @@ const mergeProps = ({ userId, oldText, oldId, fileList }, { dispatch }, { childr
     children,
     onClick: (id) => fileList.forEach(item => {
         if (id === item.id) {
-            console.log('ffdsafsdfsdfse');
             if (!item.file.text) {
                 dispatch(fetchFile({userId, hash: id}));
             } else {
