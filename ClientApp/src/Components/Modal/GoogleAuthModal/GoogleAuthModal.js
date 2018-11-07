@@ -54,7 +54,7 @@ class GoogleAuthModal extends Component {
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = (dispatch, props) => {
+const mapDispatchToProps = dispatch => {
     return {
         checkLogin: () => dispatch(checkLogin())
         // onSuccess: response => {
@@ -106,7 +106,7 @@ const mapDispatchToProps = (dispatch, props) => {
     }
 }
 
-export default (GoogleAuthModal = connect(
+export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(GoogleAuthModal))
+)(GoogleAuthModal)

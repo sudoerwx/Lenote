@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import user from './user'
 
 const ui = (
   state = {
@@ -119,6 +120,6 @@ const fileList = (
   }
 }
 
-const rootReducer = combineReducers({ ui, fileList })
+const rootReducer = combineReducers({ ui, fileList, user })
 
 export default rootReducer

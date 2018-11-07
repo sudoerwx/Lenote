@@ -5,7 +5,7 @@ const fse = require('fs-extra');
 const path = process.cwd();
 
 router.get('/:file', function(req, res) {
-    fs.readFile(`${path}/userfiles/${res.user._id}/${req.params.file}.md`,"utf8", function (err, data) {
+    fs.readFile(`${path}/userfiles/${req.user._id}/${req.params.file}.md`,"utf8", function (err, data) {
         if (err)
             res.sendStatus(404);
         if (data)
@@ -14,11 +14,11 @@ router.get('/:file', function(req, res) {
 });
 
 router.post('/:file', function(req, res) {
-    fse.ensureDir(`${path}/userfiles/${res.user._id}/`, err => {
+    fse.ensureDir(`${path}/userfiles/${req.user._id}/`, err => {
         console.log(err) // => null
         // dir has now been created
     });
-    fs.writeFile(`${path}/userfiles/${res.user._id}/${req.params.file}.md`, req.body, function (err) {
+    fs.writeFile(`${path}/userfiles/${req.user._id}/${req.params.file}.md`, req.body, function (err) {
         if (err) res.sendStatus(500);
         if(!err) res.sendStatus(200);
         console.log(req.body);
@@ -26,7 +26,7 @@ router.post('/:file', function(req, res) {
 });
 
 router.delete('/:file', function(req, res) {
-    fs.unlink(`${path}/userfiles/${res.user._id}/${req.params.file}.md`, function (err) {
+    fs.unlink(`${path}/userfiles/${req.user._id}/${req.params.file}.md`, function (err) {
         if (err) res.sendStatus(404);
         if(!err) res.sendStatus(200);
     });

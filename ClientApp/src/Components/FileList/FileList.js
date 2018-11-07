@@ -3,6 +3,7 @@ import FileListItem from "./FileListItem/FileListItem";
 import './FileList.css'
 import {fetchFile} from "../../Actions/async";
 import {selectFile} from "../../Actions/sync";
+import { getFile } from "../../Actions/fileActions";
 import {connect} from "react-redux";
 import AddNewFile from "./AddNewFile/AddNewFile";
 
@@ -19,7 +20,7 @@ class FileList extends Component {
                                 name={file.name}
                                 current={this.props.current}
                                 id={file.nameHash}
-                                onClick={() => this.props.onClick(file.nameHash)}
+                                onClick={() => this.props.getFile(file.nameHash)}
                                 key={file.nameHash}
                             />
                         )
@@ -38,20 +39,15 @@ const mapStateToProps = state => ({
     oldId: state.ui.currentFile
 });
 
+const mapDispatchToProps = dispatch => ({
+  getFile: id => dispatch(getFile(id))
+})
+
 const mergeProps = ({ userId, oldText, oldId, fileList }, { dispatch }, { children }) => ({
     fileList,
     children,
-    onClick: (id) => fileList.forEach(item => {
-        if (id === item.id) {
-            if (!item.file.text) {
-                dispatch(fetchFile({userId, hash: id}));
-            } else {
-                dispatch(selectFile(oldId, id, oldText, item.file.text));
-            }
-        }
-    })
 });
 
-FileList = connect(mapStateToProps, null, mergeProps)(FileList);
+FileList = connect(mapStateToProps, mapDispatchToProps, mergeProps)(FileList);
 
 export default FileList;

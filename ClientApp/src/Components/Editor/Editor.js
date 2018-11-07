@@ -103,9 +103,7 @@ class Editor extends Component {
 const mapStateToProps = state => ({
     isPreview: state.ui.isPreview,
     isToolsPanelHidden: state.ui.isToolsPanelHidden,
-    userImage: state.ui.userInfo.profileObj
-        ? state.ui.userInfo.profileObj.imageUrl
-        : ""
+    userImage: state.user.photoURI || ""
 })
 
 const mapDispatchToProps = dispatch => ({
