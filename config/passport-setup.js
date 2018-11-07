@@ -4,6 +4,9 @@ const md5 = require('md5');
 const User = require('../database/Schema/userSchema.js');
 const File = require('../database/Schema/userSchema.js');
 const keys = require('./keys');
+const path = process.cwd();
+const fs = require('fs');
+const fse = require('fs-extra');
 
 
 
@@ -44,6 +47,16 @@ passport.use(
 		},],
         secondFiles: []
     	}).save().then((newUser)=>{
+
+    		 fse.ensureDir(`${path}/userfiles/${newUser._id}/`, err => {
+      			  console.log(err) // => null
+		        // dir has now been created
+		    });
+
+		    fs.writeFile(`${path}/userfiles/${newUser._id}/${md5('Welcome')}.md`, "#Welcome", function (err) {
+		        if (err) console.log(err);
+		    });
+
     		console.log('new user created'+newUser);
     		done(err, newUser);
     	});

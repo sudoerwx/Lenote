@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const passportSetup = require('./config/passport-setup');
 const passport = require('passport');
 const cookieSession = require('cookie-session');
+const expressSession = require("express-session");
 const keys = require('./config/keys');
 
 //routers
@@ -18,11 +19,17 @@ const authRouter =require('./routes/auth')
 db.setUPConnection();
 
 const app = express();
-
+app.use(expressSession({
+    secret: keys.session.cookieKey,
+    store: new (require("connect-mongo")(expressSession))({
+        url: keys.mongodb.dbURI
+    })
+}));
+/*
 app.use(cookieSession({
 	maxAge:24*60*60*1000,
 	keys:[keys.session.cookieKey]
-}));
+}));*/
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
