@@ -9,6 +9,6 @@ module.exports ={
 		dbURI:'mongodb://test:test_pass_1234@ds121343.mlab.com:21343/lenote-users'
 	},
 	session:{
-		cookieKey:'somekeys'
+		secret:'somekeys'
 	}
 };

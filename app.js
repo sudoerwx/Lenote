@@ -20,7 +20,7 @@ db.setUPConnection();
 const app = express();
 app.use(
     expressSession({
-      secret: keys.session.cookieKey,
+      secret: keys.session.secret,
       store: new (require('connect-mongo')(expressSession))({
         url: keys.mongodb.dbURI,
       }),
