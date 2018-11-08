@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import FileListItem from "./FileListItem/FileListItem";
 import './FileList.css'
-import {fetchFile} from "../../Actions/async";
-import {selectFile} from "../../Actions/sync";
 import { getFile } from "../../Actions/fileActions";
 import {connect} from "react-redux";
 import AddNewFile from "./AddNewFile/AddNewFile";

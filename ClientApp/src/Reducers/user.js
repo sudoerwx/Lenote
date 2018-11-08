@@ -1,9 +1,9 @@
-export default (state = {}, action = {}) => {
+export default (state = { isAuthorized: false }, action = {}) => {
   switch(action.type) {
     case 'UNAUTHORIZED':
-      return {}
+      return { isAuthorized: false }
     case 'LOGIN':
-      return action.payload;
+      return { isAuthorized: true, ...action.payload };
     default:
       return state;
   }
