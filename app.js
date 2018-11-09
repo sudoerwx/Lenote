@@ -35,6 +35,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(express.static(path.resolve(__dirname, './client/build')));
 app.use(bodyParser.text());
 app.use(passport.initialize());
 app.use(passport.session());
