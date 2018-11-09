@@ -3,11 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "client": "cd ClientApp/ && npm start -p 3000",
+    "server": "node ./bin/www -p 5000",
+    "dev": "nodemon ./bin/www",
+    "start": "concurrently --kill-others-on-fail \"npm run-script client\" \"npm run-script server\""
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "concurrently": "^4.0.1",
     "connect-mongo": "^2.0.1",
     "cookie-parser": "~1.4.3",
     "cookie-session": "^2.0.0-beta.3",
