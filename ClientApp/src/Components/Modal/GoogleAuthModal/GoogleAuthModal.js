@@ -19,7 +19,7 @@ class GoogleAuthModal extends Component {
             >
                 <h2>Sign in</h2>
                 <a
-                    href="http://localhost:5000/auth/google"
+                    href="/auth/google"
                     className="google-login-button"
                 >
                     Sign in with Google

@@ -19,7 +19,7 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root')
 );
-const socket = io('http://localhost:5000/');
+const socket = io('/');
     	
   socket.on('connect', function () {
 
