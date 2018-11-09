@@ -6,10 +6,11 @@
     "client": "cd ClientApp/ && npm start",
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
-    "heroku-postbuild": "cd ClientApp/ && npm install && npm run build"
-  
+    "heroku-postbuild": "cd ClientApp/ && npm install && npm start"
   },
   "dependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
     "body-parser": "^1.18.3",
     "concurrently": "^4.0.1",
     "connect-mongo": "^2.0.1",
@@ -31,8 +32,6 @@
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
-    "babel-preset-env": "^1.7.0",
-    "babel-register": "^6.26.0",
     "eslint": "^5.8.0",
     "eslint-config-google": "^0.11.0"
   }
