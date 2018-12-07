@@ -1,57 +1,35 @@
-import React, { Component } from 'react';
-import './App.css';
-import {connect} from 'react-redux';
-import Editor from '../Editor/Editor';
-import GoogleAuthModal from '../Modal/GoogleAuthModal/GoogleAuthModal';
-import {saveFile} from "../../Actions/async";
+import React from 'react'
+import Toolbar from '../Toolbar/Toolbar'
+import AppContainer from '../AppContainer/AppContainer'
+import { createGlobalStyle } from 'styled-components'
 
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            previousText: ''
-        }
+const GlobalStyle = createGlobalStyle`
+	* {
+        margin: 0;
+        padding: 0;
+	}
+    body {
+        font-family: Roboto;
+        font-size: 18px;
+		background-color: var(--c-grey-bg);
     }
-
-    componentDidMount() {
-        setInterval(() => {
-            if(this.state.previousText === this.props.currentFile.text ||
-                this.props.isLoading ||
-                !this.props.currentFile.text) {
-                return;
-            }
-            this.props.saveFile(this.props.currentFile);
-            this.setState({previousText: this.props.currentFile.text});
-        }, 2000);
+    :root {
+	    --container-width: 960px;
+	    --max-width: 1336px;
+	
+        --c-grey-bg: #eee;
+		--c-white-hl: rgba(255, 255, 255, 0.65);
+		--c-blue-hl: #00B2FF;
+		--c-darkgrey-text: #555;
     }
+`
 
-    render() {
-        const text = this.props.currentFile.text;
-        return (
-            <div className="App">
-                <Editor>
-                    {text}
-                </Editor>
-                <GoogleAuthModal />
-            </div>
-        );
-  }
-}
+const App = () => (
+    <div>
+		<Toolbar />
+	    <AppContainer />
+        <GlobalStyle></GlobalStyle>
+    </div>
+)
 
-const mapStateToProps = ({ ui }) => {
-    return ({
-    currentFile: {
-        userId: ui.userInfo.GoogleId,
-        hash: ui.currentFile,
-        text: ui.text
-    },
-    isLoading: ui.isLoading
-})};
-
-const mapDispatchToProps = (dispatch) => ({
-    saveFile: (file) => dispatch(saveFile(file))
-});
-
-App = connect(mapStateToProps, mapDispatchToProps)(App);
-
-export default App;
+export default App
