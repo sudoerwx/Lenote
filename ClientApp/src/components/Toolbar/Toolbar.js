@@ -18,7 +18,7 @@ const StyledToolbar = styled.div`
 `
 
 const Wrapper = styled.div`
-    width: 100%;
+    width: 100vw;
     max-width: var(--container-width);
     height: 60px;
     display: flex;

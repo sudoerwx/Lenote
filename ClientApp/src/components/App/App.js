@@ -1,6 +1,7 @@
 import React from 'react'
 import Toolbar from '../Toolbar/Toolbar'
-import AppContainer from '../AppContainer/AppContainer'
+import Sidebar from '../Sidebar/Sidebar'
+import Paper from '../Paper/Paper'
 import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
@@ -39,11 +40,12 @@ const GlobalStyle = createGlobalStyle`
 `
 
 const App = () => (
-    <div>
+	<div>
 		<Toolbar />
-	    <AppContainer />
-        <GlobalStyle></GlobalStyle>
-    </div>
+        <Sidebar />
+        <Paper />
+		<GlobalStyle />
+	</div>
 )
 
 export default App

@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import styled from 'styled-components'
 
 const StyledSidebar = styled.div`
 	margin-top: 40px;
 	width: calc((var(--max-width) - var(--container-width)) / 2);
+    position: fixed;
+    margin-left: 50%;
+    left: calc((var(--max-width) / -2))
 `
-
+// left: calc((var(--container-width) / -2) - (var(--max-width) - var(--container-width)) / 2)
 const Item = styled.div`
 	background-color: ${({ hl }) => hl ? 'var(--c-white-hl)' : 'transparent'};
 	border-left: ${({ hl }) => hl ? '4px' : 0} solid var(--c-blue-hl);
@@ -33,27 +36,27 @@ const Text = styled.p`
 const mockData = {
 	'Own files': [
 		{ name: 'Lorem Ipsum Dolor', id: 1, highlighted: true },
-		{ name: 'Sit Amet Consectetur', id: 1 },
-		{ name: 'Sed do eiusmod', id: 1 },
-		{ name: 'Tempor ut dolore', id: 1 },
+		{ name: 'Sit Amet Consectetur', id: 2 },
+		{ name: 'Sed do eiusmod', id: 3 },
+		{ name: 'Tempor ut dolore', id: 4 },
 	],
 	'Other\'s files': [
 		{ name: 'Lorem Ipsum Dolor', id: 1 },
-		{ name: 'Sit Amet Consectetur', id: 1 },
-		{ name: 'Sed do eiusmod', id: 1 },
-		{ name: 'Tempor ut dolore', id: 1 },
+		{ name: 'Sit Amet Consectetur', id: 2 },
+		{ name: 'Sed do eiusmod', id: 3 },
+		{ name: 'Tempor ut dolore', id: 4 },
 	],
 }
 
 const Sidebar = ({ empty }) => (
 	<StyledSidebar>
 		{!empty && Object.keys(mockData).map(key => (
-			<>
+			<Fragment key={key}>
 				<Text>{key}</Text>
 				{mockData[key].map(({ name, highlighted, id }) => (
 					<Item key={id} hl={highlighted}>{name}</Item>
 				))}
-			</>
+            </Fragment>
 		))}
 	</StyledSidebar>
 )

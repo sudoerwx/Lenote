@@ -2,6 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import Editor from '../Editor/Editor'
 
+const Wrapper = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+`
+
 const StyledPaper = styled.div`
 	margin-top: 40px;
 	width: calc(var(--container-width) - 60px);
@@ -11,9 +17,11 @@ const StyledPaper = styled.div`
 `
 
 const Paper = () => (
-	<StyledPaper>
-		<Editor />
-	</StyledPaper>
+    <Wrapper>
+        <StyledPaper>
+            <Editor />
+        </StyledPaper>
+    </Wrapper>
 )
 
 export default Paper

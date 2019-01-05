@@ -14,15 +14,15 @@ class Editor extends Component {
 
 	componentDidMount() {
 		const codeMirror = CodeMirror.fromTextArea(this.editorRef.current, {
-            value: "",
-            mode: {
-                name: "markdown",
-                allowAtxHeaderWithoutSpace: true,
-                highlightFormatting: true,
-                maxBlockquoteDepth: 3,
-                fencedCodeBlockHighlighting: true
-            },
-            lineWrapping: true
+			value: '',
+			mode: {
+				name: 'markdown',
+				allowAtxHeaderWithoutSpace: true,
+				highlightFormatting: true,
+				maxBlockquoteDepth: 3,
+				fencedCodeBlockHighlighting: true,
+			},
+			lineWrapping: true,
 		})
 
 		this.props.setCmInstance(codeMirror)
@@ -35,4 +35,7 @@ class Editor extends Component {
 
 const mapDispatchToProps = { setCmInstance }
 
-export default connect(null, mapDispatchToProps)(Editor)
+export default connect(
+	null,
+	mapDispatchToProps
+)(Editor)
