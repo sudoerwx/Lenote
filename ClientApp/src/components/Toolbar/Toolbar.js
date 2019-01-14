@@ -44,9 +44,10 @@ const Group = styled.div`
     }
 `
 
-const LoginButton = styled.div`
+const LoginButton = styled.a`
 	font-weight: 500;
-	color: var(--c-blue-hl)
+	color: var(--c-blue-hl);
+    text-decoration: none;
 `
 
 const Toolbar = () => (
@@ -57,7 +58,7 @@ const Toolbar = () => (
 			</Group>
 			<Group><Buttons /></Group>
 			<Group>
-				<LoginButton>Login</LoginButton>
+                <LoginButton href={`${process.env.REACT_APP_API_BASE_URL}/auth/google`}>Login</LoginButton>
 			</Group>
         </Wrapper>
     </StyledToolbar>

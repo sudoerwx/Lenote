@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "cledit": "^1.2.0",
     "codemirror": "^5.40.2",
     "diff-match-patch": "^1.0.0",

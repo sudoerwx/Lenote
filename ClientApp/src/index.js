@@ -5,10 +5,12 @@ import { Provider } from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
 import registerServiceWorker from './registerServiceWorker'
 import io from 'socket.io-client'
+import rootReducer from './reducers'
+
 import App from './components/App/App'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const store = createStore(() => {}, composeEnhancers(applyMiddleware(thunkMiddleware)
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunkMiddleware)
 ));
 
 render(

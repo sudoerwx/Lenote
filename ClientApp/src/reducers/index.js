@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
-import codeMirror from './cmReducer'
+import editor from './editor'
 
 export default combineReducers({
-	codeMirror,
+	editor,
 })

@@ -1,8 +1,8 @@
 import React from 'react'
+import { createGlobalStyle } from 'styled-components'
 import Toolbar from '../Toolbar/Toolbar'
 import Sidebar from '../Sidebar/Sidebar'
 import Paper from '../Paper/Paper'
-import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
 	* {

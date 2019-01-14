@@ -48,9 +48,9 @@ const mockData = {
 	],
 }
 
-const Sidebar = ({ empty }) => (
+const Sidebar = () => (
 	<StyledSidebar>
-		{!empty && Object.keys(mockData).map(key => (
+		{Object.keys(mockData).map(key => (
 			<Fragment key={key}>
 				<Text>{key}</Text>
 				{mockData[key].map(({ name, highlighted, id }) => (

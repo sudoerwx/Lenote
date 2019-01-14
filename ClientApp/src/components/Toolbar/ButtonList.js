@@ -11,15 +11,15 @@ import { ReactComponent as UlIcon } from '../../icons/toolbar/ul.svg'
 import { ReactComponent as OlIcon } from '../../icons/toolbar/ol.svg'
 
 export default [
-	TitleIcon,
-    BoldIcon,
-    ItalicIcon,
-    QuoteIcon,
-    CodeIcon,
-    TableIcon,
-    LinkIcon,
-    ImgIcon,
-    DividerIcon,
-    UlIcon,
-    OlIcon,
+	{ Icon: TitleIcon, title: 'Heading', method: 'heading' },
+    { Icon: BoldIcon, title: 'Bold', method: 'bold' },
+    { Icon: ItalicIcon, title: 'Italic', method: 'italic' },
+    { Icon: QuoteIcon, title: 'Blockquote', method: 'quote' },
+    { Icon: CodeIcon, title: 'Code', method: 'code' },
+    { Icon: TableIcon, title: 'Table', method: 'table' },
+    { Icon: LinkIcon, title: 'Link', method: 'link' },
+    { Icon: ImgIcon, title: 'Image', method: 'image' },
+    { Icon: DividerIcon , title: 'Divider', method: 'hr'},
+    { Icon: UlIcon, title: 'Unordered list', method: 'ulist' },
+    { Icon: OlIcon, title: 'Ordered list', method: 'olist' },
 ]
