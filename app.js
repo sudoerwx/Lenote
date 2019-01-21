@@ -35,11 +35,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.resolve(__dirname, './ClientApp/build')));
 app.use(bodyParser.text());
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/auth', authRouter);
 // work with users
