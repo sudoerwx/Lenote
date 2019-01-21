@@ -4,7 +4,6 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
 import registerServiceWorker from './registerServiceWorker'
-import io from 'socket.io-client'
 import rootReducer from './reducers'
 
 import App from './components/App/App'
@@ -19,9 +18,5 @@ render(
   </Provider>,
   document.getElementById('root')
 );
-const socket = io('/')
-    	
-  socket.on('connect', function () {
 
-  })
 registerServiceWorker()

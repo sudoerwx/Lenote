@@ -41,12 +41,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 // app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/auth', authRouter);
 // work with users
 app.use('/users', usersRouter);
 // work with files
 app.use('/files', filesRouter);
 // login handler
-app.use('/auth', authRouter);
+
+
 app.use(express.static(path.resolve(__dirname, './ClientApp/build')));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname + '/ClientApp/build/index.html'))
