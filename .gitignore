@@ -1,3 +1,4 @@
 /node_modules
 /.idea
 ClientApp/node_modules/
+ClientApp/.env

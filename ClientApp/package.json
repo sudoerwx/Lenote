@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "cledit": "^1.2.0",
     "codemirror": "^5.40.2",
     "diff-match-patch": "^1.0.0",
@@ -12,11 +13,12 @@
     "react-google-login": "^3.2.1",
     "react-markdown-it": "^1.0.2",
     "react-redux": "^5.0.7",
-    "react-scripts": "^1.1.4",
+    "react-scripts": "^2.1.1",
     "react-svg": "^2.2.18",
     "redux": "^4.0.0",
     "redux-thunk": "^2.2.0",
-    "socket.io-client": "^2.1.1"
+    "socket.io-client": "^2.1.1",
+    "styled-components": "^4.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -25,12 +27,11 @@
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:5000",
-  "devDependencies": {
-    "eslint": "^5.8.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.0",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0"
-  }
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "lint": "eslint **/*.js"
 }
