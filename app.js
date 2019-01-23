@@ -10,6 +10,8 @@ const passport = require('passport');
 const expressSession = require('express-session');
 const keys = require('./config/keys');
 
+
+
 // routers
 const filesRouter = require('./routes/files');
 const usersRouter = require('./routes/users');
@@ -24,13 +26,10 @@ app.use(
       store: new (require('connect-mongo')(expressSession))({
         url: keys.mongodb.dbURI,
       }),
+       cookie: { maxAge: 24*60*60*1000 },
     })
 );
-/*
-app.use(cookieSession({
-  maxAge:24*60*60*1000,
-  keys:[keys.session.cookieKey]
-}));*/
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
