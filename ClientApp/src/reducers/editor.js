@@ -1,6 +1,6 @@
-import { SET_CM_INSTANCE } from '../actions/editorActions'
+import { SET_CM_INSTANCE } from '../actions/editor'
 
-export default (state = null, action) => {
+export default (state = { codeMirror: {} }, action) => {
 	switch (action.type) {
 		case SET_CM_INSTANCE:
 			return action.editor

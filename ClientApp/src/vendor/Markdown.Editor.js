@@ -53,6 +53,8 @@ import CodeMirror from 'codemirror'
         headingexample: "Heading",
         
         hr: "Horizontal Rule <hr>",
+
+        table: "Table <table>",
         
         undo: "Undo -",
         redo: "Redo -",
@@ -100,6 +102,10 @@ import CodeMirror from 'codemirror'
         hr: {
             win: 'Ctrl-R',
             mac: 'Command-R|Ctrl-R',
+        },
+        table: {
+            win: 'Ctrl-T',
+            mac: 'Command-T|Ctrl-T'
         },
         undo: {
             win: 'Ctrl-Z',
@@ -1393,7 +1399,7 @@ import CodeMirror from 'codemirror'
             }
             inputBox.addKeyMap(eKeys);
         };
-        addKeyCmd(['bold', 'italic', 'link', 'quote', 'code', 'image', 'olist', 'ulist', 'heading', 'hr']);
+        addKeyCmd(['bold', 'italic', 'link', 'quote', 'code', 'image', 'olist', 'ulist', 'heading', 'hr', 'table']);
         
         /*benweet
         util.addEvent(inputBox, keyEvent, function (key) {
@@ -1669,6 +1675,7 @@ import CodeMirror from 'codemirror'
             }));
             buttons.heading = makeButton("wmd-heading-button", getStringAndKey("heading"), "-160px", bindCommand("doHeading"));
             buttons.hr = makeButton("wmd-hr-button", getStringAndKey("hr"), "-180px", bindCommand("doHorizontalRule"));
+            buttons.table = makeButton("wmd-hr-table", getStringAndKey("table"), "-180px", bindCommand("doTable"));
             makeSpacer(3);
             buttons.undo = makeButton("wmd-undo-button", getStringAndKey("undo"), "-200px", null);
             buttons.undo.execute = function (manager) { inputBox.doc.undo(); };
@@ -2390,6 +2397,13 @@ import CodeMirror from 'codemirror'
         chunk.startTag = "----------\n";
         chunk.selection = "";
         chunk.skipLines(2, 1, true);
+    }
+
+    commandProto.doTable = function (chunk, postProcessing) {
+        chunk.startTag = `|  |  |  |
+|--|--|--|
+|  |  |  |`;
+        chunk.selection = "";
     }
 
 })();

@@ -5,10 +5,10 @@ const StyledSidebar = styled.div`
 	margin-top: 40px;
 	width: calc((var(--max-width) - var(--container-width)) / 2);
     position: fixed;
-    margin-left: 50%;
+    margin-left: 50vw;
     left: calc((var(--max-width) / -2))
 `
-// left: calc((var(--container-width) / -2) - (var(--max-width) - var(--container-width)) / 2)
+
 const Item = styled.div`
 	background-color: ${({ hl }) => hl ? 'var(--c-white-hl)' : 'transparent'};
 	border-left: ${({ hl }) => hl ? '4px' : 0} solid var(--c-blue-hl);
