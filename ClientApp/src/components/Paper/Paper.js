@@ -1,11 +1,19 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
+
 import Editor from '../Editor/Editor'
+import ReactMarkdown from 'react-markdown'
+
+import { toggleRenderMarkdown } from '../../actions/renderMarkdown'
+
+import { ReactComponent as VisibilityOn } from '../../icons/visibility-on.svg'
+import { ReactComponent as VisibilityOff } from '../../icons/visibility-off.svg'
 
 const Wrapper = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
+	width: 100%;
+	display: flex;
+	justify-content: center;
 `
 
 const StyledPaper = styled.div`
@@ -13,15 +21,71 @@ const StyledPaper = styled.div`
 	width: calc(var(--container-width) - 60px);
 	padding: 30px;
 	background-color: white;
-	box-shadow: 10px 20px 20px rgba(0, 0, 0, .25);
+	box-shadow: 10px 20px 20px rgba(0, 0, 0, 0.25);
 `
 
-const Paper = () => (
-    <Wrapper>
-        <StyledPaper>
-            <Editor />
-        </StyledPaper>
-    </Wrapper>
-)
+const VisibilityWrapper = styled.div`
+	display: ${props => (props.visible ? 'block' : 'none')};
+`
 
-export default Paper
+const MarkdownRenderWrapper = styled.div`
+	min-height: calc(100vh - 188px);
+	padding: 14px;
+	overflow-wrap: break-word;
+`
+
+const RenderButton = styled.div`
+	position: fixed;
+	width: 0;
+	height: 0;
+	top: 60px;
+	right: 0;
+	border: 40px solid rgba(0, 0, 0, 0.1);
+	border-bottom-color: transparent;
+	border-left-color: transparent;
+	cursor: pointer;
+	z-index: 2;
+	&::after {
+		content: '';
+		clear: both;
+	}
+	svg {
+		position: absolute;
+		margin-left: 5px;
+		margin-top: -30px;
+		color: var(--c-darkgrey-bg);
+	}
+`
+
+class Paper extends Component {
+	render() {
+		const { renderMarkdown, toggleRenderMarkdown, codeMirror } = this.props
+
+		return (
+			<Wrapper>
+				<StyledPaper>
+					<RenderButton onClick={toggleRenderMarkdown}>
+						{renderMarkdown ? <VisibilityOff /> : <VisibilityOn />}
+					</RenderButton>
+					<VisibilityWrapper visible={!renderMarkdown}>
+						<Editor />
+					</VisibilityWrapper>
+					<VisibilityWrapper visible={renderMarkdown}>
+						<MarkdownRenderWrapper>
+							<ReactMarkdown source={codeMirror.doc && codeMirror.doc.getValue()} />
+						</MarkdownRenderWrapper>
+					</VisibilityWrapper>
+				</StyledPaper>
+			</Wrapper>
+		)
+	}
+}
+
+const mapStateToProps = ({ renderMarkdown, editor: { codeMirror } }) => ({ renderMarkdown, codeMirror })
+
+const mapDispatchToProps = { toggleRenderMarkdown }
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Paper)

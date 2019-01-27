@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { ReactComponent as ArrowDownIcon } from '../../icons/arrow-down.svg'
 import Buttons from './Buttons'
+import Avatar from '../common/Avatar'
 
 const Button = styled.span`
 	cursor: pointer;
@@ -52,11 +53,21 @@ const LoginButton = styled.a`
 	text-decoration: none;
 `
 
-const Toolbar = ({ renderMarkdown, toggleRenderMarkdown }) => (
+const UserName = styled.div`
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	height: 100%;
+	${Avatar} {
+		margin-left: 10px;
+	}
+`
+
+const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user }) => (
 	<StyledToolbar>
 		<Wrapper>
 			<Group>
-				Lorem Ipsum Dolor{' '}
+				{user.currentFile.name}
 				<Button>
 					<ArrowDownIcon />
 				</Button>
@@ -65,13 +76,20 @@ const Toolbar = ({ renderMarkdown, toggleRenderMarkdown }) => (
 				<Buttons />
 			</Group>
 			<Group>
-				<LoginButton href={`${process.env.REACT_APP_API_BASE_URL}/auth/google`}>Login</LoginButton>
+				{user.name ? (
+					<UserName>
+						{user.name} {user.secondName}
+						{user.photoURI && <Avatar src={user.photoURI} />}
+					</UserName>
+				) : (
+					<LoginButton href={`${process.env.REACT_APP_API_BASE_URL}/auth/google`}>Login</LoginButton>
+				)}
 			</Group>
 		</Wrapper>
 	</StyledToolbar>
 )
 
-const mapStateToProps = ({ renderMarkdown }) => ({ renderMarkdown })
+const mapStateToProps = ({ renderMarkdown, user }) => ({ renderMarkdown, user })
 
 export default connect(
 	mapStateToProps,

@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { createGlobalStyle } from 'styled-components'
+
 import Toolbar from '../Toolbar/Toolbar'
 import Sidebar from '../Sidebar/Sidebar'
 import Paper from '../Paper/Paper'
+
+import { requestUserData } from '../../actions/user'
 
 const GlobalStyle = createGlobalStyle`
 	* {
@@ -39,13 +43,26 @@ const GlobalStyle = createGlobalStyle`
     }
 `
 
-const App = () => (
-	<div>
-		<Toolbar />
-        <Sidebar />
-        <Paper />
-		<GlobalStyle />
-	</div>
-)
+class App extends Component {
+	componentDidMount() {
+		this.props.requestUserData()
+	}
 
-export default App
+	render() {
+		return (
+			<div>
+				<Toolbar />
+				<Sidebar />
+				<Paper />
+				<GlobalStyle />
+			</div>
+		)
+	}
+}
+
+const mapDispatchToProps = { requestUserData }
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(App)
