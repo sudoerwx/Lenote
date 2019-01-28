@@ -215,7 +215,7 @@ class Editor extends Component {
 			for (let key in anchorMap) removeId(key)
 		}
 
-		const socket = io()
+		const socket = io('http://localhost:8080')
 		socket.on('connect', () => {
 			socket.on('disconnect', () => clearAll())
 
