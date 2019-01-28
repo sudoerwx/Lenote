@@ -11,6 +11,25 @@ const expressSession = require('express-session');
 const keys = require('./config/keys');
 
 
+var http = require('http');
+const ShareDB = require('sharedb')
+var otText = require('ot-text');
+ShareDB.types.register(otText.type)
+const wsdb = require('sharedb-mongo')(keys.mongodb.dbURI);
+
+const share = new ShareDB()
+
+const shareconn = share.connect()
+
+const WebSocket = require('ws')
+const WebSocketJSONStream = require('websocket-json-stream')
+
+const shareserver = http.createServer()
+const sharewss = new WebSocket.Server({ server: shareserver })
+sharewss.on('connection', client => share.listen(new WebSocketJSONStream(client)))
+shareserver.listen(4000);
+console.log(`ShareDB listening on port 4000`);
+
 
 // routers
 const filesRouter = require('./routes/files');
@@ -26,7 +45,7 @@ app.use(
       store: new (require('connect-mongo')(expressSession))({
         url: keys.mongodb.dbURI,
       }),
-       cookie: { maxAge: 24*60*60*1000 },
+       
     })
 );
 
@@ -38,6 +57,23 @@ app.use(bodyParser.text());
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use((res, req, next) => {
+    // Create the document if it hasn't been already
+   //  const sharedoc = shareconn.get('docs', 'Welcome')
+   // if (sharedoc.data == null) sharedoc.create("", 'ot-text');
+    
+  var doc = shareconn.get('docs', 'Welcome');
+  doc.fetch(function(err) {
+    if (err) throw err;
+    if (doc.type === null) {
+      doc.create('', 'text');
+      return;
+    }
+
+  });
+
+    next()
+})
 
 app.use('/auth', authRouter);
 // work with users

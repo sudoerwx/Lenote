@@ -45,10 +45,12 @@ class Editor extends Component {
 
 		let stopWatch = false
 
-		const sharews = new WebSocket(`ws://localhost:8080`)
+		const sharews = new WebSocket(`ws://localhost:4000`)
 		const shareconn = new ShareDB.Connection(sharews)
-		const docMatches = window.location.href.match(/\?doc=([a-zA-Z1-9]+)/)
+
 		const sharedoc = shareconn.get('docs', 'Welcome')
+
+		console.log(sharedoc)
 
 		codeMirror.on('change', (ed, chg) => {
 			if (stopWatch) return
@@ -215,7 +217,7 @@ class Editor extends Component {
 			for (let key in anchorMap) removeId(key)
 		}
 
-		const socket = io('http://localhost:8080')
+		const socket = io('http://localhost:4000')
 		socket.on('connect', () => {
 			socket.on('disconnect', () => clearAll())
 

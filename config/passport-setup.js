@@ -10,7 +10,7 @@ const fse = require('fs-extra');
 
 // login serializer
 passport.serializeUser((user, done) => {
-  done(null, user._id);
+  done(null, user);
 });
 // login deserializer
 passport.deserializeUser((id, done) => {

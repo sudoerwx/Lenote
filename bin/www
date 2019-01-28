@@ -34,21 +34,8 @@ var editFileSocket = require('../sockets/colaboration')(io);
 /**
  * Create Share DB server
  */
-const keys = require("../config/keys");
-const db = require('sharedb-mongo')(keys.mongodb.dbURI);
-const ShareDB = require('sharedb')
-ShareDB.types.register(require('ot-text').type)
-const WebSocket = require('ws')
-const WebSocketJSONStream = require('websocket-json-stream')
 
-const share = new ShareDB({db})
 
-const shareconn = share.connect()
-const shareserver = http.createServer()
-const sharewss = new WebSocket.Server({ server: shareserver })
-sharewss.on('connection', client => share.listen(new WebSocketJSONStream(client)))
-shareserver.listen(8080);
-console.log(`ShareDB listening on port 8080`);
 
 /**
  * Listen on provided port, on all network interfaces.
