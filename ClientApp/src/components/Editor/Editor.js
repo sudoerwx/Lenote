@@ -1,6 +1,7 @@
 import React, { Component, createRef } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import otText from 'ot-text'
 import ShareDB from 'sharedb/lib/client'
 import io from 'socket.io-client'
 
@@ -45,10 +46,21 @@ class Editor extends Component {
 
 		let stopWatch = false
 
+		ShareDB.types.register(otText.type)
+
 		const sharews = new WebSocket(`ws://localhost:4000`)
 		const shareconn = new ShareDB.Connection(sharews)
 
 		const sharedoc = shareconn.get('docs', 'Welcome')
+		/*
+            sharedoc.fetch(function(err) {
+                if (err) throw err
+                console.log('asdf', sharedoc.type)
+                if (sharedoc.type === null) {
+                    sharedoc.create('', 'text')
+                }
+            })
+            */
 
 		console.log(sharedoc)
 
@@ -78,6 +90,7 @@ class Editor extends Component {
 
 		sharedoc.subscribe(d => {
 			stopWatch = true
+
 			codeMirror.setValue(sharedoc.data || '')
 			codeMirror.setCursor(0, 0)
 			codeMirror.focus()
