@@ -82,7 +82,7 @@ const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user }) => (
 						{user.photoURI && <Avatar src={user.photoURI} />}
 					</UserName>
 				) : (
-					<LoginButton href={`http://localhost:5000/auth/google`}>Login</LoginButton>
+					<LoginButton href={`${process.env.REACT_APP_API_BASE_URL}/auth/google`}>Login</LoginButton>
 				)}
 			</Group>
 		</Wrapper>

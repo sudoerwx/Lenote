@@ -7,6 +7,7 @@
     "cledit": "^1.2.0",
     "codemirror": "^5.40.2",
     "diff-match-patch": "^1.0.0",
+    "ot-text": "^1.0.2",
     "prismjs": "^1.14.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
