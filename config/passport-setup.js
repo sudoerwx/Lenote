@@ -43,7 +43,8 @@ passport.use(
 									name: "Welcome",
 									nameHash: md5("Welcome" + profile.id),
 									ownerId: profile.id,
-									ownerName: profile.name.givenName
+									ownerName: profile.name.givenName,
+									allowedPeople: []
 								}
 							],
 							secondFiles: []

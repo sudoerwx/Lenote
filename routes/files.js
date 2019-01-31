@@ -12,8 +12,10 @@ router.post("/:file", function(req, res) {
           name: req.params.file,
           nameHash: md5(req.params.file + user.id),
           ownerId: user.id,
-          ownerName: user.name.givenName
+          ownerName: user.name.givenName,
+          allowedPeople: []
         })
+        .save()
         .then(user => {
           websockets.createFile(
             user.ownFiles[user.ownFiles.length - 1].nameHash
@@ -38,12 +40,15 @@ router.delete("/:file", function(req, res) {
         )
         .then(err => {
           if (!err)
-            user.ownFiles.splice(
-              user.ownFiles.findIndex(
-                (element, index, array) => element.nameHash === req.params.file
-              ),
-              1
-            );
+            user.ownFiles
+              .splice(
+                user.ownFiles.findIndex(
+                  (element, index, array) =>
+                    element.nameHash === req.params.file
+                ),
+                1
+              )
+              .save();
         });
     });
   } else {

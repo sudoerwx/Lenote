@@ -8,7 +8,6 @@ router.get(
 	passport.authenticate("google", { scope: ["profile", "email"] })
 );
 // google login callback
-console.log(process.env.NODE_ENV);
 router.get(
 	"/google/callback",
 	passport.authenticate("google", {
@@ -16,5 +15,10 @@ router.get(
 		failureRedirect: "/auth/google"
 	})
 );
+
+router.get("/logout", function(req, res) {
+	req.logout();
+	res.redirect(process.env.NODE_ENV ? "/" : "http://localhost:3000/");
+});
 
 module.exports = router;

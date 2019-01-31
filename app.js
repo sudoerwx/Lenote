@@ -14,6 +14,7 @@ const keys = require("./config/keys");
 const filesRouter = require("./routes/files");
 const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
+const linkRouter = require("./routes/links");
 
 db.setUPConnection();
 
@@ -41,12 +42,14 @@ app.use(passport.session());
 //Setup WebSockets and add midleware
 const websockets = require("./sockets/websockets.js")(app);
 
+// login handler
 app.use("/auth", authRouter);
 // work with users
-app.use("/users", usersRouter);
+app.use("/user", usersRouter);
 // work with files
-app.use("/files", filesRouter);
-// login handler
+app.use("/file", filesRouter);
+// create links
+app.use("/link", linkRouter);
 
 app.use(express.static(path.resolve(__dirname, "./ClientApp/build")));
 app.get("/", (req, res) => {
