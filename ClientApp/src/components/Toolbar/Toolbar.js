@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { ReactComponent as ArrowDownIcon } from '../../icons/arrow-down.svg'
 import Buttons from './Buttons'
 import Avatar from '../common/Avatar'
+import Menu from '../common/Menu'
+import { logout } from '../../actions/user'
 
 const Button = styled.span`
 	cursor: pointer;
@@ -63,7 +65,21 @@ const UserName = styled.div`
 	}
 `
 
-const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user }) => (
+const UserButtonsContainer = styled.div`
+	margin-top: 10px;
+	width: 200px;
+	right: 0;
+	box-shadow: 4px 2px 2px rgba(0, 0, 0, 0.2);
+	background-color: white;
+	color: var(--c-darkgrey-text);
+`
+
+const UserButton = styled.div`
+	padding: 15px 20px;
+	cursor: pointer;
+`
+
+const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout }) => (
 	<StyledToolbar>
 		<Wrapper>
 			<Group>
@@ -77,10 +93,15 @@ const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user }) => (
 			</Group>
 			<Group>
 				{user.name ? (
-					<UserName>
-						{user.name} {user.secondName}
-						{user.photoURI && <Avatar src={user.photoURI} />}
-					</UserName>
+					<Menu OptionsContainer={UserButtonsContainer}>
+						<Menu.Open>
+							<UserName>
+								{user.name} {user.secondName}
+								{user.photoURI && <Avatar src={user.photoURI} />}
+							</UserName>
+						</Menu.Open>
+						<UserButton onClick={logout}>Logout</UserButton>
+					</Menu>
 				) : (
 					<LoginButton href={`${process.env.REACT_APP_API_BASE_URL}/auth/google`}>Login</LoginButton>
 				)}
@@ -91,7 +112,9 @@ const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user }) => (
 
 const mapStateToProps = ({ renderMarkdown, user }) => ({ renderMarkdown, user })
 
+const mapDispatchToProps = { logout }
+
 export default connect(
 	mapStateToProps,
-	null
+	mapDispatchToProps
 )(Toolbar)

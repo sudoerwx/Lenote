@@ -30,7 +30,7 @@ const GlobalStyle = createGlobalStyle`
 		--c-blue-hl: #00B2FF;
         --c-lightgrey-text: #eee;
 		--c-grey-text: #B9B9B9;
-		--c-darkgrey-text: #555;
+        --c-darkgrey-text: #555;
 
 		@media (max-width: 1920px) {
 			--container-width: 60vw;

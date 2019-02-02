@@ -32,7 +32,6 @@ class Editor extends Component {
 			value: '',
 			mode: {
 				name: 'markdown',
-				allowAtxHeaderWithoutSpace: true,
 				highlightFormatting: true,
 				maxBlockquoteDepth: 3,
 				fencedCodeBlockHighlighting: true,
