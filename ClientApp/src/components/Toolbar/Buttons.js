@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
@@ -13,20 +13,12 @@ const StyledButtons = styled.div`
 	}
 `
 
-class Buttons extends Component {
-	componentDidMount() {}
-
-	render() {
-		const { editor } = this.props
-
-		return (
-			<StyledButtons>
-				{ButtonList.map(({ Icon, method }, index) => (
-                    <Icon key={index} onClick={() => editor.doClick(method)} fill="var(--c-lightgrey-text)" />
-				))}
-			</StyledButtons>
-		)
-	}
-}
+const Buttons = ({ editor }) => (
+	<StyledButtons>
+		{ButtonList.map(({ Icon, method }, index) => (
+			<Icon key={index} onClick={() => editor.doClick(method)} fill="var(--c-lightgrey-text)" />
+		))}
+	</StyledButtons>
+)
 
 export default connect(({ editor }) => ({ editor }))(Buttons)

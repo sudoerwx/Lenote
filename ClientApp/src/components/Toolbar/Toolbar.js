@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { ReactComponent as ArrowDownIcon } from '../../icons/arrow-down.svg'
 import Buttons from './Buttons'
 import Avatar from '../common/Avatar'
-import Menu from '../common/Menu'
+import Menu, { OpenMenu } from '../common/Menu'
 import { logout } from '../../actions/user'
 
 const Button = styled.span`
@@ -94,12 +94,12 @@ const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout }) => (
 			<Group>
 				{user.name ? (
 					<Menu OptionsContainer={UserButtonsContainer}>
-						<Menu.Open>
+						<OpenMenu>
 							<UserName>
 								{user.name} {user.secondName}
 								{user.photoURI && <Avatar src={user.photoURI} />}
 							</UserName>
-						</Menu.Open>
+						</OpenMenu>
 						<UserButton onClick={logout}>Logout</UserButton>
 					</Menu>
 				) : (

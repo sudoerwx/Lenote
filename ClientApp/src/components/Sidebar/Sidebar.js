@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import { createFile, deleteFile } from '../../actions/user'
+import { ReactComponent as DeleteIcon } from '../../icons/delete.svg'
 
 const StyledSidebar = styled.div`
 	margin-top: 40px;
@@ -11,9 +13,11 @@ const StyledSidebar = styled.div`
 `
 
 const Item = styled.div`
+	display: flex;
+	justify-content: space-between;
 	background-color: ${({ hl }) => (hl ? 'var(--c-white-hl)' : 'transparent')};
 	border-left: ${({ hl }) => (hl ? '4px' : 0)} solid var(--c-blue-hl);
-	padding: 8px 21px;
+	padding: 8px;
 	padding-left: ${({ hl }) => (hl ? '17px' : '21px')};
 	font-weight: 200;
 	white-space: nowrap;
@@ -21,8 +25,32 @@ const Item = styled.div`
 	text-overflow: ellipsis;
 	color: var(--c-darkgrey-text);
 	cursor: pointer;
+	transition: color 0.3s;
 	&:hover {
 		color: black;
+		svg {
+			fill: var(--c-red-hl);
+			pointer-events: auto;
+		}
+	}
+	svg {
+		fill: transparent;
+		pointer-events: none;
+		transition: fill 0.3s 0.1s;
+	}
+`
+
+const NewFileButton = styled(Item)`
+	display: block;
+	margin-top: 10px;
+	&::before {
+		content: '+';
+		font-size: 1.3rem;
+		font-weight: 400;
+		opacity: 0.7;
+		vertical-align: middle;
+		margin-left: -10px;
+		margin-right: 10px;
 	}
 `
 
@@ -34,7 +62,7 @@ const Text = styled.p`
 	color: var(--c-grey-text);
 `
 
-const Sidebar = ({ user }) => (
+const Sidebar = ({ user, createFile, deleteFile }) => (
 	<StyledSidebar>
 		{!!user.ownFiles.length && (
 			<>
@@ -42,6 +70,7 @@ const Sidebar = ({ user }) => (
 				{user.ownFiles.map(({ name, highlighted, nameHash }) => (
 					<Item key={nameHash} hl={nameHash === user.currentFile.nameHash}>
 						{name}
+						<DeleteIcon onClick={() => deleteFile(nameHash)} />
 					</Item>
 				))}
 			</>
@@ -52,13 +81,20 @@ const Sidebar = ({ user }) => (
 				{user.secondFiles.map(({ name, highlighted, nameHash }) => (
 					<Item key={nameHash} hl={nameHash === user.currentFile.nameHash}>
 						{name}
+						<DeleteIcon onClick={() => deleteFile(nameHash)} />
 					</Item>
 				))}
 			</>
 		)}
+		<NewFileButton onClick={() => createFile('asdf' + new Date().toISOString())}>Add a new file</NewFileButton>
 	</StyledSidebar>
 )
 
 const mapStateToProps = ({ user }) => ({ user })
 
-export default connect(mapStateToProps)(Sidebar)
+const mapDispatchToProps = { createFile, deleteFile }
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Sidebar)

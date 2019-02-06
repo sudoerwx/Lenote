@@ -1,5 +1,7 @@
 export const RECEIVE_USER_DATA = 'RECEIVE_USER_DATA'
 export const LOGOUT = 'LOGOUT'
+export const CREATE_FILE_SUCCESS = 'CREATE_FILE_SUCCESS'
+export const DELETE_FILE_SUCCESS = 'DELETE_FILE_SUCCESS'
 
 export const requestUserData = () => async dispatch => {
 	try {
@@ -26,4 +28,39 @@ export const logout = () => async dispatch => {
 
 export const logoutSuccess = () => ({
 	type: LOGOUT,
+})
+
+export const createFile = name => async dispatch => {
+	try {
+		const { data } = await fetch(`/file/${name}`, { method: 'POST' })
+		dispatch(createFileSuccess(data))
+	} catch (err) {
+		console.warn(err)
+		dispatch(createFileSuccess(name)) // TODO: delete when backend is finished
+	}
+}
+
+export const createFileSuccess = name => ({
+	type: CREATE_FILE_SUCCESS,
+	data: {
+		name,
+		nameHash: name
+			.split('')
+			.reverse()
+			.join(''),
+	},
+})
+
+export const deleteFile = nameHash => async dispatch => {
+	try {
+		await fetch(`/file/${nameHash}`, { method: 'DELETE' })
+		dispatch(deleteFileSuccess(nameHash))
+	} catch (err) {
+		console.warn(err)
+	}
+}
+
+export const deleteFileSuccess = nameHash => ({
+	type: DELETE_FILE_SUCCESS,
+	nameHash,
 })

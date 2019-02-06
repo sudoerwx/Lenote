@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { createGlobalStyle } from 'styled-components'
 
@@ -28,6 +28,7 @@ const GlobalStyle = createGlobalStyle`
 		--c-darkgrey-bg: #3E3E3E;
 		--c-white-hl: rgba(255, 255, 255, 0.65);
 		--c-blue-hl: #00B2FF;
+        --c-red-hl: rgba(255, 0, 0, 0.46);
         --c-lightgrey-text: #eee;
 		--c-grey-text: #B9B9B9;
         --c-darkgrey-text: #555;
@@ -43,21 +44,19 @@ const GlobalStyle = createGlobalStyle`
     }
 `
 
-class App extends Component {
-	componentDidMount() {
-		this.props.requestUserData()
-	}
+const App = ({ requestUserData }) => {
+	useEffect(() => {
+		requestUserData()
+	}, [])
 
-	render() {
-		return (
-			<div>
-				<Toolbar />
-				<Sidebar />
-				<Paper />
-				<GlobalStyle />
-			</div>
-		)
-	}
+	return (
+		<div>
+			<Toolbar />
+			<Sidebar />
+			<Paper />
+			<GlobalStyle />
+		</div>
+	)
 }
 
 const mapDispatchToProps = { requestUserData }

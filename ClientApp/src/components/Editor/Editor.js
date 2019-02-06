@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react'
+import React, { useEffect, useRef, createRef } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import otText from 'ot-text'
@@ -22,13 +22,13 @@ const FakeButtonsElement = styled.div`
 	display: none;
 `
 
-class Editor extends Component {
-	editorRef = createRef()
+const Editor = ({ user, codeMirror, setCmInstance }) => {
+	const editorRef = useRef(createRef())
 
-	componentDidMount() {
+	useEffect(() => {
 		const pagedownConverter = new PagedownConverter.Converter()
 		const pagedownEditor = new PagedownEditor.Editor(pagedownConverter)
-		const codeMirror = CodeMirror.fromTextArea(this.editorRef.current, {
+		const codeMirror = CodeMirror.fromTextArea(editorRef.current, {
 			value: '',
 			mode: {
 				name: 'markdown',
@@ -41,13 +41,11 @@ class Editor extends Component {
 		pagedownEditor.run(codeMirror)
 		const doClick = name =>
 			pagedownEditor.uiManager.buttons[name] && pagedownEditor.uiManager.buttons[name].onclick()
-		this.props.setCmInstance({ codeMirror, doClick })
-	}
+		setCmInstance({ codeMirror, doClick })
+	}, [])
 
-	componentDidUpdate(prevProps) {
-		const { user, codeMirror } = this.props
-
-		if (!user._id || prevProps.user === this.props.user) return
+	useRef(() => {
+		if (!user._id) return
 
 		let stopWatch = false
 
@@ -104,7 +102,7 @@ class Editor extends Component {
 
 		sharedoc.on('op', (op, mine) => {
 			if (mine) return
-			const index = op.length == 2 ? op[0] : 0
+			const index = op.length === 2 ? op[0] : 0
 			const data = op.length === 2 ? op[1] : op[0]
 
 			if (typeof data === 'string') {
@@ -260,18 +258,14 @@ class Editor extends Component {
 				removeId(e.id)
 			})
 		})
-	}
+	}, user)
 
-	render() {
-		const { codeMirror } = this.props
-
-		return (
-			<>
-				<textarea ref={this.editorRef} />
-				<FakeButtonsElement id="wmd-button-bar" />
-			</>
-		)
-	}
+	return (
+		<>
+			<textarea ref={editorRef} />
+			<FakeButtonsElement id="wmd-button-bar" />
+		</>
+	)
 }
 
 const mapStateToProps = ({ editor: { codeMirror }, user }) => ({ codeMirror, user })

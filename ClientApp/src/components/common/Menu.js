@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react'
+import React, { useState, useEffect, useRef, createRef } from 'react'
 import styled from 'styled-components'
 
 const Container = styled.div`
@@ -11,59 +11,41 @@ const OptionsWrapper = styled.div`
 	display: ${props => (props.visible ? 'block' : 'none')};
 `
 
-const Open = () => null
+export const OpenMenu = () => null
 
-class Menu extends Component {
-	clickAwayRef = createRef()
+const Menu = ({ children, ContainerTag = Container, OptionsContainer = 'div', value, onChange }) => {
+	const clickAwayRef = useRef(createRef())
+	const [isMenuOpen, toggleMenu] = useState(false)
+	const open = children.find(child => child.type === OpenMenu)
+	const options = children.filter(child => child.type !== OpenMenu)
 
-	state = {
-		isMenuOpen: false,
-	}
-
-	toggleMenu = () => this.setState(prevState => ({ isMenuOpen: !prevState.isMenuOpen }))
-
-	hideMenu = () => this.setState({ isMenuOpen: false })
-
-	hideOnClickAway = event => {
-		if (!event.path.some(el => el === this.clickAwayRef.current)) {
-			this.hideMenu()
+	const hideOnClickAway = event => {
+		if (!event.path.some(el => el === clickAwayRef.current)) {
+			toggleMenu(false)
 		}
 	}
 
-	componentDidMount() {
-		window.addEventListener('click', this.hideOnClickAway)
-	}
+	useEffect(() => {
+		window.addEventListener('click', hideOnClickAway)
+		return () => window.removeEventListener('click', hideOnClickAway)
+	}, [])
 
-	componentWillUnmount() {
-		window.removeEventListener('click', this.hideOnClickAway)
-	}
-
-	render() {
-		const { children, ContainerTag = Container, OptionsContainer = 'div', value, onChange } = this.props
-		const { isMenuOpen } = this.state
-
-		const open = children.find(child => child.type === Open)
-		const options = children.filter(child => child.type !== Open)
-
-		return (
-			<ContainerTag onClick={this.toggleMenu} ref={this.clickAwayRef}>
-				{open && open.props.children}
-				<OptionsWrapper visible={isMenuOpen}>
-					<OptionsContainer>
-						{options &&
-							React.Children.map(options, option =>
-								React.cloneElement(option, {
-									onClick: e => onChange(option.props.value, e),
-									...option.props,
-								})
-							)}
-					</OptionsContainer>
-				</OptionsWrapper>
-			</ContainerTag>
-		)
-	}
-
-	static Open = Open
+	return (
+		<ContainerTag onClick={() => toggleMenu(!isMenuOpen)} ref={clickAwayRef}>
+			{open && open.props.children}
+			<OptionsWrapper visible={isMenuOpen}>
+				<OptionsContainer>
+					{options &&
+						React.Children.map(options, option =>
+							React.cloneElement(option, {
+								onClick: e => onChange(option.props.value, e),
+								...option.props,
+							})
+						)}
+				</OptionsContainer>
+			</OptionsWrapper>
+		</ContainerTag>
+	)
 }
 
 export default Menu
