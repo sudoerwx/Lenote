@@ -6,8 +6,9 @@ import Buttons from './Buttons'
 import Avatar from '../common/Avatar'
 import Menu, { OpenMenu } from '../common/Menu'
 import { logout } from '../../actions/user'
+import { getShareLink } from '../../actions/shareLink'
 
-const Button = styled.span`
+const Button = styled.div`
 	cursor: pointer;
 `
 
@@ -49,6 +50,10 @@ const Group = styled.div`
 	}
 `
 
+const ShareLink = styled.input`
+	padding: 15px 20px;
+`
+
 const LoginButton = styled.a`
 	font-weight: 500;
 	color: var(--c-blue-hl);
@@ -65,7 +70,7 @@ const UserName = styled.div`
 	}
 `
 
-const UserButtonsContainer = styled.div`
+const MenuButtonsContainer = styled.div`
 	margin-top: 10px;
 	width: 200px;
 	right: 0;
@@ -79,21 +84,31 @@ const UserButton = styled.div`
 	cursor: pointer;
 `
 
-const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout }) => (
+const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout, getShareLink, shareLink }) => (
 	<StyledToolbar>
 		<Wrapper>
 			<Group>
-				{user.currentFile.name}
-				<Button>
-					<ArrowDownIcon />
-				</Button>
+				<Menu onOpen={() => getShareLink(user.currentFile.nameHash)}>
+					<OpenMenu OptionsContainer={MenuButtonsContainer}>
+						<Button>
+							{user.currentFile.name}
+							<ArrowDownIcon />
+						</Button>
+					</OpenMenu>
+					<ShareLink
+						onChange={() => {}}
+						value={
+							shareLink.link ? `Share link: ${window.location.origin}/${shareLink.link}` : 'Share link: '
+						}
+					/>
+				</Menu>
 			</Group>
 			<Group>
 				<Buttons />
 			</Group>
 			<Group>
 				{user.name ? (
-					<Menu OptionsContainer={UserButtonsContainer}>
+					<Menu OptionsContainer={MenuButtonsContainer}>
 						<OpenMenu>
 							<UserName>
 								{user.name} {user.secondName}
@@ -110,9 +125,9 @@ const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout }) => (
 	</StyledToolbar>
 )
 
-const mapStateToProps = ({ renderMarkdown, user }) => ({ renderMarkdown, user })
+const mapStateToProps = ({ renderMarkdown, user, shareLink }) => ({ renderMarkdown, user, shareLink })
 
-const mapDispatchToProps = { logout }
+const mapDispatchToProps = { logout, getShareLink }
 
 export default connect(
 	mapStateToProps,

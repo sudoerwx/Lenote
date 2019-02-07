@@ -13,15 +13,31 @@ const OptionsWrapper = styled.div`
 
 export const OpenMenu = () => null
 
-const Menu = ({ children, ContainerTag = Container, OptionsContainer = 'div', value, onChange }) => {
+const Menu = ({
+	children,
+	ContainerTag = Container,
+	OptionsContainer = 'div',
+	value,
+	onChange = () => {},
+	onOpen = () => {},
+}) => {
 	const clickAwayRef = useRef(createRef())
-	const [isMenuOpen, toggleMenu] = useState(false)
+	const [isMenuOpen, setMenuOpen] = useState(false)
+
+	const toggleMenu = () => {
+		if (isMenuOpen) {
+			setMenuOpen(false)
+		} else {
+			onOpen()
+			setMenuOpen(true)
+		}
+	}
 	const open = children.find(child => child.type === OpenMenu)
 	const options = children.filter(child => child.type !== OpenMenu)
 
 	const hideOnClickAway = event => {
 		if (!event.path.some(el => el === clickAwayRef.current)) {
-			toggleMenu(false)
+			setMenuOpen(false)
 		}
 	}
 
@@ -31,10 +47,10 @@ const Menu = ({ children, ContainerTag = Container, OptionsContainer = 'div', va
 	}, [])
 
 	return (
-		<ContainerTag onClick={() => toggleMenu(!isMenuOpen)} ref={clickAwayRef}>
+		<ContainerTag onClick={() => toggleMenu()} ref={clickAwayRef}>
 			{open && open.props.children}
 			<OptionsWrapper visible={isMenuOpen}>
-				<OptionsContainer>
+				<OptionsContainer onClick={e => e.stopPropagation()}>
 					{options &&
 						React.Children.map(options, option =>
 							React.cloneElement(option, {
