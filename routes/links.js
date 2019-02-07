@@ -14,7 +14,8 @@ router.get("/:nameHash", function(req, res) {
 				{ __v: 0 },
 				(err, currentLink) => {
 					if (currentLink) {
-						currentLink.createdAt.expires = 86400;
+						currentLink.createdAt = Date.now();
+						currentLink.save()
 						res.send({
 							status: "updated",
 							link: currentLink._id,
@@ -23,7 +24,8 @@ router.get("/:nameHash", function(req, res) {
 					} else {
 						new Link({
 							_id: md5(req.params.nameHash),
-							sharedFile: req.user.ownFiles[fileid]
+							sharedFile: req.user.ownFiles[fileid],
+							createdAt:Date.now()
 						})
 							.save()
 							.then(newLink => {
@@ -37,7 +39,7 @@ router.get("/:nameHash", function(req, res) {
 				}
 			);
 		} else {
-			res.sendStatus(401);
+			res.sendStatus(204);
 		}
 	} else {
 		res.sendStatus(401);
@@ -55,10 +57,12 @@ router.delete("/:nameHash", function(req, res) {
 				{ __v: 0 },
 				(err, currentLink) => {
 					if (currentLink) {
-						Link.deleteOne({ _id: currentLink._id }, err =>
-							callback(err)
-						).save();
-						res.sendStatus(200);
+						Link.deleteOne({ _id: currentLink._id }, err =>{
+							console.log(err)
+						}
+						).then(res.sendStatus(200))
+						
+						
 					}
 				}
 			);

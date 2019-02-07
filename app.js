@@ -15,6 +15,7 @@ const filesRouter = require("./routes/files");
 const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
 const linkRouter = require("./routes/links");
+const shareLinkHandler = require("./routes/shareLinkHandler")
 
 db.setUPConnection();
 
@@ -50,6 +51,8 @@ app.use("/user", usersRouter);
 app.use("/file", filesRouter);
 // create links
 app.use("/link", linkRouter);
+
+app.use("/share",shareLinkHandler)
 
 app.use(express.static(path.resolve(__dirname, "./ClientApp/build")));
 app.get("/", (req, res) => {
