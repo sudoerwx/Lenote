@@ -29,12 +29,16 @@ router.post('/:file', function(req, res) {
 router.delete('/:file', function(req, res) {
 	if (req.user) {
 		User.findById(req.user._id, (err, user) => {
-			websockets.deleteFile(
-				user.ownFiles[user.ownFiles.findIndex((element, index, array) => element.nameHash === req.params.file)]
-					.nameHash
-			)
+     let ownfileid= user.ownFiles[user.ownFiles.findIndex((element, index, array) => element.nameHash === req.params.file)]
+          .nameHash
+          let secondfileid =user.secondFiles[user.secondFiles.findIndex((element, index, array) => element.nameHash === req.params.file)]
+          .nameHash;
+			websockets.deleteFile(ownfileid?ownfileid:secondfileid)
 
-			User.ownFiles.splice(
+      
+
+
+			user.ownFiles.splice(
 				user.ownFiles.findIndex((element, index, array) => element.nameHash === req.params.file),
 				1
 			)

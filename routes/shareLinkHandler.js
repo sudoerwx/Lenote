@@ -5,10 +5,13 @@ const User = require("../database/Schema/userSchema.js");
 const Link = require("../database/Schema/shareLinkSchema.js");
 router.get("/:nameHash", function(req, res) {
 	if (req.user) {
-		const fileid = req.user.secondFiles.findIndex(
+		const secondfileid = req.user.secondFiles.findIndex(
+			(element, index, array) => element.nameHash === req.params.nameHash
+			);
+			const ownfileid = req.user.ownFiles.findIndex(
 			(element, index, array) => element.nameHash === req.params.nameHash
 		);
-		if (fileid === -1) {
+		if (secondfileid === -1 && ownfileid ===-1) {
 			Link.findOne(
 				{ _id: md5(req.params.nameHash) },
 				{ __v: 0 },
