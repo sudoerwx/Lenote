@@ -1,7 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import styled, { css } from 'styled-components'
+import { Link, withRouter } from 'react-router-dom'
+import styled from 'styled-components'
 import { createFile, deleteFile } from '../../actions/user'
+import { useModal } from '../common/Modal'
+import CreateFileModal from './CreateFileModal'
 import { ReactComponent as DeleteIcon } from '../../icons/delete.svg'
 
 const StyledSidebar = styled.div`
@@ -15,6 +18,7 @@ const StyledSidebar = styled.div`
 const Item = styled.div`
 	display: flex;
 	justify-content: space-between;
+	text-decoration: none;
 	background-color: ${({ hl }) => (hl ? 'var(--c-white-hl)' : 'transparent')};
 	border-left: ${({ hl }) => (hl ? '4px' : 0)} solid var(--c-blue-hl);
 	padding: 8px;
@@ -62,39 +66,74 @@ const Text = styled.p`
 	color: var(--c-grey-text);
 `
 
-const Sidebar = ({ user, createFile, deleteFile }) => (
-	<StyledSidebar>
-		{!!user.ownFiles.length && (
-			<>
-				<Text>Own files</Text>
-				{user.ownFiles.map(({ name, highlighted, nameHash }) => (
-					<Item key={nameHash} hl={nameHash === user.currentFile.nameHash}>
-						{name}
-						<DeleteIcon onClick={() => deleteFile(nameHash)} />
-					</Item>
-				))}
-			</>
-		)}
-		{!!user.secondFiles.length && (
-			<>
-				<Text>Other's files</Text>
-				{user.secondFiles.map(({ name, highlighted, nameHash }) => (
-					<Item key={nameHash} hl={nameHash === user.currentFile.nameHash}>
-						{name}
-						<DeleteIcon onClick={() => deleteFile(nameHash)} />
-					</Item>
-				))}
-			</>
-		)}
-		<NewFileButton onClick={() => createFile('asdf' + new Date().toISOString())}>Add a new file</NewFileButton>
-	</StyledSidebar>
-)
+const Sidebar = ({ user, createFile, deleteFile, match, history }) => {
+	const [createFileVisible, hideCreateFile, showCreateFile] = useModal()
+
+	const currentFile =
+		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
+
+	return (
+		<StyledSidebar>
+			{!!user.ownFiles.length && (
+				<>
+					<Text>Own files</Text>
+					{user.ownFiles.map(({ name, highlighted, nameHash }) => (
+						<Item
+							key={nameHash}
+							hl={nameHash === currentFile.nameHash}
+							onClick={() => history.push(`/${nameHash}`)}
+						>
+							{name}
+							<DeleteIcon
+								onClick={e => {
+									e.stopPropagation()
+									deleteFile(nameHash)
+								}}
+							/>
+						</Item>
+					))}
+				</>
+			)}
+			{!!user.secondFiles.length && (
+				<>
+					<Text>Other's files</Text>
+					{user.secondFiles.map(({ name, highlighted, nameHash }) => (
+						<Item
+							key={nameHash}
+							hl={nameHash === currentFile.nameHash}
+							onClick={() => history.push(`/${nameHash}`)}
+						>
+							{name}
+							<DeleteIcon
+								onClick={e => {
+									e.stopPropagation()
+									deleteFile(nameHash)
+								}}
+							/>
+						</Item>
+					))}
+				</>
+			)}
+			<NewFileButton onClick={showCreateFile}>Add a new file</NewFileButton>
+			<CreateFileModal
+				visible={createFileVisible}
+				onClose={hideCreateFile}
+				error={newFileName =>
+					user.ownFiles.some(({ name }) => name === newFileName) && 'File with this name already exists'
+				}
+				submit={createFile}
+			/>
+		</StyledSidebar>
+	)
+}
 
 const mapStateToProps = ({ user }) => ({ user })
 
 const mapDispatchToProps = { createFile, deleteFile }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Sidebar)
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Sidebar)
+)

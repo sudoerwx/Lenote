@@ -1,12 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { withRouter } from 'react-router-dom'
 import { ReactComponent as ArrowDownIcon } from '../../icons/arrow-down.svg'
 import Buttons from './Buttons'
 import Avatar from '../common/Avatar'
 import Menu, { OpenMenu } from '../common/Menu'
+import { useModal } from '../common/Modal'
+import ShareLinkModal from './ShareLinkModal'
 import { logout } from '../../actions/user'
-import { getShareLink } from '../../actions/shareLink'
 
 const Button = styled.div`
 	cursor: pointer;
@@ -50,10 +52,6 @@ const Group = styled.div`
 	}
 `
 
-const ShareLink = styled.input`
-	padding: 15px 20px;
-`
-
 const LoginButton = styled.a`
 	font-weight: 500;
 	color: var(--c-blue-hl);
@@ -79,57 +77,62 @@ const MenuButtonsContainer = styled.div`
 	color: var(--c-darkgrey-text);
 `
 
-const UserButton = styled.div`
+const MenuButton = styled.div`
 	padding: 15px 20px;
 	cursor: pointer;
 `
 
-const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout, getShareLink, shareLink }) => (
-	<StyledToolbar>
-		<Wrapper>
-			<Group>
-				<Menu onOpen={() => getShareLink(user.currentFile.nameHash)}>
-					<OpenMenu OptionsContainer={MenuButtonsContainer}>
-						<Button>
-							{user.currentFile.name}
-							<ArrowDownIcon />
-						</Button>
-					</OpenMenu>
-					<ShareLink
-						onChange={() => {}}
-						value={
-							shareLink.link ? `Share link: ${window.location.origin}/${shareLink.link}` : 'Share link: '
-						}
-					/>
-				</Menu>
-			</Group>
-			<Group>
-				<Buttons />
-			</Group>
-			<Group>
-				{user.name ? (
+const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout, match, history }) => {
+	const [shareLinkVisible, hideShareLink, showShareLink] = useModal()
+
+	const currentFile =
+		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
+
+	return (
+		<StyledToolbar>
+			<Wrapper>
+				<Group>
 					<Menu OptionsContainer={MenuButtonsContainer}>
 						<OpenMenu>
-							<UserName>
-								{user.name} {user.secondName}
-								{user.photoURI && <Avatar src={user.photoURI} />}
-							</UserName>
+							<Button>
+								{currentFile.name}
+								<ArrowDownIcon />
+							</Button>
 						</OpenMenu>
-						<UserButton onClick={logout}>Logout</UserButton>
+						<MenuButton onClick={showShareLink}>Get shareable link</MenuButton>
 					</Menu>
-				) : (
-					<LoginButton href={`${process.env.REACT_APP_API_BASE_URL}/auth/google`}>Login</LoginButton>
-				)}
-			</Group>
-		</Wrapper>
-	</StyledToolbar>
+				</Group>
+				<Group>
+					<Buttons />
+				</Group>
+				<Group>
+					{user.name ? (
+						<Menu OptionsContainer={MenuButtonsContainer}>
+							<OpenMenu>
+								<UserName>
+									{user.name} {user.secondName}
+									{user.photoURI && <Avatar src={user.photoURI} />}
+								</UserName>
+							</OpenMenu>
+							<MenuButton onClick={() => logout(history)}>Logout</MenuButton>
+						</Menu>
+					) : (
+						<LoginButton href={`${process.env.REACT_APP_API_BASE_URL}/auth/google`}>Login</LoginButton>
+					)}
+				</Group>
+			</Wrapper>
+			<ShareLinkModal visible={shareLinkVisible} onClose={hideShareLink} />
+		</StyledToolbar>
+	)
+}
+
+const mapStateToProps = ({ renderMarkdown, user }) => ({ renderMarkdown, user })
+
+const mapDispatchToProps = { logout }
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Toolbar)
 )
-
-const mapStateToProps = ({ renderMarkdown, user, shareLink }) => ({ renderMarkdown, user, shareLink })
-
-const mapDispatchToProps = { logout, getShareLink }
-
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Toolbar)

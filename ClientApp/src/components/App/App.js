@@ -44,7 +44,7 @@ const GlobalStyle = createGlobalStyle`
     }
 `
 
-const App = ({ requestUserData }) => {
+const App = ({ requestUserData, nameHash }) => {
 	useEffect(() => {
 		requestUserData()
 	}, [])

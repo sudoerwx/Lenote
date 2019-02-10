@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, createRef } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import otText from 'ot-text'
 import ShareDB from 'sharedb/lib/client'
@@ -22,8 +23,11 @@ const FakeButtonsElement = styled.div`
 	display: none;
 `
 
-const Editor = ({ user, codeMirror, setCmInstance }) => {
+const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 	const editorRef = useRef(createRef())
+
+	const currentFile =
+		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
 
 	useEffect(() => {
 		const pagedownConverter = new PagedownConverter.Converter()
@@ -44,18 +48,25 @@ const Editor = ({ user, codeMirror, setCmInstance }) => {
 		setCmInstance({ codeMirror, doClick })
 	}, [])
 
-	useRef(() => {
-		if (!user._id) return
+	useEffect(
+		() => {
+			if (user.ownFiles.length && match.params.nameHash && !currentFile.nameHash) history.push('/')
+		},
+		[user, match.params.nameHash, currentFile]
+	)
 
-		let stopWatch = false
+	useEffect(
+		() => {
+			if (!currentFile.nameHash) return
+			let stopWatch = false
 
-		ShareDB.types.register(otText.type)
+			ShareDB.types.register(otText.type)
 
-		const sharews = new WebSocket(`ws://localhost:4000`)
-		const shareconn = new ShareDB.Connection(sharews)
+			const sharews = new WebSocket(`ws://localhost:4000`)
+			const shareconn = new ShareDB.Connection(sharews)
 
-		const sharedoc = shareconn.get('docs', user.currentFile.nameHash)
-		/*
+			const sharedoc = shareconn.get('docs', currentFile.nameHash)
+			/*
             sharedoc.fetch(function(err) {
                 if (err) throw err
                 console.log('asdf', sharedoc.type)
@@ -65,75 +76,75 @@ const Editor = ({ user, codeMirror, setCmInstance }) => {
             })
             */
 
-		console.log(sharedoc)
+			console.log(sharedoc)
 
-		codeMirror.on('change', (ed, chg) => {
-			if (stopWatch) return
+			codeMirror.on('change', (ed, chg) => {
+				if (stopWatch) return
 
-			const stindex = ed.indexFromPos(chg.from)
-			const delta = chg.removed.join('\n').length
-			const addedText = chg.text.join('\n')
+				const stindex = ed.indexFromPos(chg.from)
+				const delta = chg.removed.join('\n').length
+				const addedText = chg.text.join('\n')
 
-			if (delta) sharedoc.submitOp([stindex, { d: delta }])
-			if (addedText) sharedoc.submitOp([stindex, addedText])
-		})
+				if (delta) sharedoc.submitOp([stindex, { d: delta }])
+				if (addedText) sharedoc.submitOp([stindex, addedText])
+			})
 
-		codeMirror.on('cursorActivity', e => {
-			const stPos = codeMirror.getCursor('start')
-			const edPos = codeMirror.getCursor('end')
-			const hdPos = codeMirror.getCursor('head')
+			codeMirror.on('cursorActivity', e => {
+				const stPos = codeMirror.getCursor('start')
+				const edPos = codeMirror.getCursor('end')
+				const hdPos = codeMirror.getCursor('head')
 
-			const stindex = codeMirror.indexFromPos(stPos)
-			const edindex = codeMirror.indexFromPos(edPos)
-			const hdindex = codeMirror.indexFromPos(hdPos)
-			const prefixed = hdindex === stindex && stindex !== edindex
+				const stindex = codeMirror.indexFromPos(stPos)
+				const edindex = codeMirror.indexFromPos(edPos)
+				const hdindex = codeMirror.indexFromPos(hdPos)
+				const prefixed = hdindex === stindex && stindex !== edindex
 
-			socket.emit('anchor-update', { stindex, edindex, prefixed })
-		})
+				socket.emit('anchor-update', { stindex, edindex, prefixed })
+			})
 
-		sharedoc.subscribe(d => {
-			stopWatch = true
-
-			codeMirror.setValue(sharedoc.data || '')
-			codeMirror.setCursor(0, 0)
-			codeMirror.focus()
-			stopWatch = false
-		})
-
-		sharedoc.on('op', (op, mine) => {
-			if (mine) return
-			const index = op.length === 2 ? op[0] : 0
-			const data = op.length === 2 ? op[1] : op[0]
-
-			if (typeof data === 'string') {
-				const pos = codeMirror.posFromIndex(index)
-
+			sharedoc.subscribe(d => {
 				stopWatch = true
-				codeMirror.replaceRange(data, pos, pos)
+
+				codeMirror.setValue(sharedoc.data || '')
+				codeMirror.setCursor(0, 0)
+				codeMirror.focus()
 				stopWatch = false
-			} else {
-				const delCt = data.d
-				const stPos = codeMirror.posFromIndex(index)
-				const edPos = codeMirror.posFromIndex(index + delCt)
-				const range = { start: stPos, end: edPos }
+			})
 
-				stopWatch = true
-				codeMirror.replaceRange('', stPos, edPos)
-				stopWatch = false
-			}
-		})
+			sharedoc.on('op', (op, mine) => {
+				if (mine) return
+				const index = op.length === 2 ? op[0] : 0
+				const data = op.length === 2 ? op[1] : op[0]
 
-		const addName = (id, name) => {
-			const userslist = document.querySelector('#users')
-			const usericon = document.createElement('li')
-			usericon.classList.add(`u-${id}`)
-			usericon.innerHTML = name
-			userslist.appendChild(usericon)
+				if (typeof data === 'string') {
+					const pos = codeMirror.posFromIndex(index)
 
-			const color = idToColor(id)
-			const styleTag = document.createElement('style')
-			styleTag.id = `style-${id}`
-			styleTag.innerHTML = `
+					stopWatch = true
+					codeMirror.replaceRange(data, pos, pos)
+					stopWatch = false
+				} else {
+					const delCt = data.d
+					const stPos = codeMirror.posFromIndex(index)
+					const edPos = codeMirror.posFromIndex(index + delCt)
+					const range = { start: stPos, end: edPos }
+
+					stopWatch = true
+					codeMirror.replaceRange('', stPos, edPos)
+					stopWatch = false
+				}
+			})
+
+			const addName = (id, name) => {
+				const userslist = document.querySelector('#users')
+				const usericon = document.createElement('li')
+				usericon.classList.add(`u-${id}`)
+				usericon.innerHTML = name
+				userslist.appendChild(usericon)
+
+				const color = idToColor(id)
+				const styleTag = document.createElement('style')
+				styleTag.id = `style-${id}`
+				styleTag.innerHTML = `
                 .u-${id} { background-color: ${color}; }
                 .CodeMirror-line .u-${id}                   { background-color: ${hexToRgbaStyle(color, 0.35)}; }
                 .CodeMirror-line .u-${id}.cursor            { opacity: 1; }
@@ -142,123 +153,125 @@ const Editor = ({ user, codeMirror, setCmInstance }) => {
                 .CodeMirror-line .u-${id}.empty             { background-color: transparent; }
 
             `
-			document.querySelector('head').appendChild(styleTag)
-		}
-
-		const anchorMap = {}
-		const setAnchor = (id, anchor) => {
-			if (id in anchorMap) {
-				anchorMap[id].forEach(m => m.clear())
-				delete anchorMap[id]
+				document.querySelector('head').appendChild(styleTag)
 			}
 
-			// Whether or not the cursor is actually at the beginning
-			// or end of the selection
-			let emptyClass = ''
-			let stindex = anchor.stindex
-			const edindex = anchor.edindex
+			const anchorMap = {}
+			const setAnchor = (id, anchor) => {
+				if (id in anchorMap) {
+					anchorMap[id].forEach(m => m.clear())
+					delete anchorMap[id]
+				}
 
-			// Add selection
-			let stPos, edPos, range
-			anchorMap[id] = []
+				// Whether or not the cursor is actually at the beginning
+				// or end of the selection
+				let emptyClass = ''
+				let stindex = anchor.stindex
+				const edindex = anchor.edindex
 
-			if (stindex !== edindex) {
-				stPos = codeMirror.posFromIndex(stindex)
-				edPos = codeMirror.posFromIndex(edindex)
+				// Add selection
+				let stPos, edPos, range
+				anchorMap[id] = []
 
-				anchorMap[id].push(codeMirror.markText(stPos, edPos, { className: `u-${id}` }))
+				if (stindex !== edindex) {
+					stPos = codeMirror.posFromIndex(stindex)
+					edPos = codeMirror.posFromIndex(edindex)
+
+					anchorMap[id].push(codeMirror.markText(stPos, edPos, { className: `u-${id}` }))
+				}
+
+				if (stindex === edindex) {
+					stindex = Math.max(0, stindex - 1)
+					emptyClass = 'empty'
+				}
+
+				// Add cursor
+				const index = anchor.prefixed ? stindex : edindex
+				stPos = codeMirror.posFromIndex(index + (anchor.prefixed ? 0 : -1))
+				edPos = codeMirror.posFromIndex(index + (anchor.prefixed ? 1 : 0))
+
+				anchorMap[id].push(
+					codeMirror.markText(stPos, edPos, {
+						className: `u-${id} ${emptyClass} cursor ${anchor.prefixed ? 'left' : 'right'}`,
+					})
+				)
 			}
 
-			if (stindex === edindex) {
-				stindex = Math.max(0, stindex - 1)
-				emptyClass = 'empty'
+			const removeId = id => {
+				document.querySelector(`#users li.u-${id}`).remove()
+				document.querySelector(`#style-${id}`).remove()
+				if (id in anchorMap) {
+					anchorMap[id].forEach(m => m.clear())
+					delete anchorMap[id]
+				}
 			}
 
-			// Add cursor
-			const index = anchor.prefixed ? stindex : edindex
-			stPos = codeMirror.posFromIndex(index + (anchor.prefixed ? 0 : -1))
-			edPos = codeMirror.posFromIndex(index + (anchor.prefixed ? 1 : 0))
+			const idToColor = id => {
+				let total = 0
+				for (let c of id) total += c.charCodeAt(0)
 
-			anchorMap[id].push(
-				codeMirror.markText(stPos, edPos, {
-					className: `u-${id} ${emptyClass} cursor ${anchor.prefixed ? 'left' : 'right'}`,
+				let hex = total.toString(16)
+				while (hex.length < 3) hex += hex[hex.length - 1]
+				hex = hex.substr(0, 3)
+
+				let color = '#'
+				for (let c of hex) color += `${c}0`
+
+				return color
+			}
+
+			const hexToRgbaStyle = (hex, opacity) => {
+				hex = hex.replace('#', '')
+				let r, g, b, den
+				if (hex.length === 3) {
+					r = hex[0] + hex[0]
+					g = hex[1] + hex[1]
+					b = hex[2] + hex[2]
+				} else {
+					r = hex.substr(0, 2)
+					g = hex.substr(2, 2)
+					b = hex.substr(4, 2)
+				}
+
+				r = parseInt(r, 16)
+				g = parseInt(g, 16)
+				b = parseInt(b, 16)
+
+				return `rgba(${r},${g},${b},${opacity})`
+			}
+
+			const clearAll = () => {
+				for (let key in anchorMap) removeId(key)
+			}
+
+			const socket = io('http://localhost:4000')
+			socket.on('connect', () => {
+				socket.on('disconnect', () => clearAll())
+
+				socket.once('initialize', e => {
+					for (let id in e.anchors) socket.id !== id && setAnchor(id, e.anchors[id])
+					for (let id in e.names) socket.id !== id && addName(id, e.names[id])
 				})
-			)
-		}
+				socket.on('anchor-update', e => {
+					if (socket.id === e.id) return
 
-		const removeId = id => {
-			document.querySelector(`#users li.u-${id}`).remove()
-			document.querySelector(`#style-${id}`).remove()
-			if (id in anchorMap) {
-				anchorMap[id].forEach(m => m.clear())
-				delete anchorMap[id]
-			}
-		}
+					setAnchor(e.id, e.anchor)
+				})
+				socket.on('id-join', e => {
+					if (socket.id === e.id) return
 
-		const idToColor = id => {
-			let total = 0
-			for (let c of id) total += c.charCodeAt(0)
+					addName(e.id, e.name)
+					setAnchor(e.id, e.anchor)
+				})
+				socket.on('id-left', e => {
+					if (socket.id === e.id) return
 
-			let hex = total.toString(16)
-			while (hex.length < 3) hex += hex[hex.length - 1]
-			hex = hex.substr(0, 3)
-
-			let color = '#'
-			for (let c of hex) color += `${c}0`
-
-			return color
-		}
-
-		const hexToRgbaStyle = (hex, opacity) => {
-			hex = hex.replace('#', '')
-			let r, g, b, den
-			if (hex.length === 3) {
-				r = hex[0] + hex[0]
-				g = hex[1] + hex[1]
-				b = hex[2] + hex[2]
-			} else {
-				r = hex.substr(0, 2)
-				g = hex.substr(2, 2)
-				b = hex.substr(4, 2)
-			}
-
-			r = parseInt(r, 16)
-			g = parseInt(g, 16)
-			b = parseInt(b, 16)
-
-			return `rgba(${r},${g},${b},${opacity})`
-		}
-
-		const clearAll = () => {
-			for (let key in anchorMap) removeId(key)
-		}
-
-		const socket = io('http://localhost:4000')
-		socket.on('connect', () => {
-			socket.on('disconnect', () => clearAll())
-
-			socket.once('initialize', e => {
-				for (let id in e.anchors) socket.id !== id && setAnchor(id, e.anchors[id])
-				for (let id in e.names) socket.id !== id && addName(id, e.names[id])
+					removeId(e.id)
+				})
 			})
-			socket.on('anchor-update', e => {
-				if (socket.id === e.id) return
-
-				setAnchor(e.id, e.anchor)
-			})
-			socket.on('id-join', e => {
-				if (socket.id === e.id) return
-
-				addName(e.id, e.name)
-				setAnchor(e.id, e.anchor)
-			})
-			socket.on('id-left', e => {
-				if (socket.id === e.id) return
-
-				removeId(e.id)
-			})
-		})
-	}, user)
+		},
+		[currentFile.nameHash]
+	)
 
 	return (
 		<>
@@ -272,7 +285,9 @@ const mapStateToProps = ({ editor: { codeMirror }, user }) => ({ codeMirror, use
 
 const mapDispatchToProps = { setCmInstance }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Editor)
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Editor)
+)

@@ -17,10 +17,11 @@ export const receiveUserData = data => ({
 	data,
 })
 
-export const logout = () => async dispatch => {
+export const logout = history => async dispatch => {
 	try {
-		const data = await fetch('/auth/logout')
+		await fetch('/auth/logout')
 		dispatch(logoutSuccess())
+		history.push('/')
 	} catch (err) {
 		console.warn(err)
 	}

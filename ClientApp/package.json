@@ -1,40 +1,42 @@
 {
-  "name": "webapplication1",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "axios": "^0.18.0",
-    "cledit": "^1.2.0",
-    "codemirror": "^5.40.2",
-    "diff-match-patch": "^1.0.0",
-    "ot-text": "^1.0.2",
-    "prismjs": "^1.14.0",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0",
-    "react-google-login": "^3.2.1",
-    "react-markdown": "^4.0.6",
-    "react-markdown-it": "^1.0.2",
-    "react-redux": "^5.0.7",
-    "react-scripts": "^2.1.3",
-    "react-svg": "^2.2.18",
-    "redux": "^4.0.0",
-    "redux-thunk": "^2.2.0",
-    "sharedb": "^1.0.0-beta.17",
-    "socket.io-client": "^2.2.0",
-    "styled-components": "^4.1.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  },
-  "proxy": "http://localhost:5000/",
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "lint": "eslint **/*.js"
+    "name": "webapplication1",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "axios": "^0.18.0",
+        "cledit": "^1.2.0",
+        "codemirror": "^5.40.2",
+        "diff-match-patch": "^1.0.0",
+        "ot-text": "^1.0.2",
+        "prismjs": "^1.14.0",
+        "react": "^16.8.0",
+        "react-dom": "^16.8.0",
+        "react-google-login": "^3.2.1",
+        "react-markdown": "^4.0.6",
+        "react-markdown-it": "^1.0.2",
+        "react-redux": "^5.0.7",
+        "react-router": "^4.3.1",
+        "react-router-dom": "^4.3.1",
+        "react-scripts": "^2.1.3",
+        "react-svg": "^2.2.18",
+        "redux": "^4.0.0",
+        "redux-thunk": "^2.2.0",
+        "sharedb": "^1.0.0-beta.17",
+        "socket.io-client": "^2.2.0",
+        "styled-components": "^4.1.1"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject"
+    },
+    "proxy": "http://localhost:5000/",
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ],
+    "lint": "eslint **/*.js"
 }
