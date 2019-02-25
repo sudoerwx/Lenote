@@ -168,6 +168,7 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 
 			const anchorMap = {}
 			const setAnchor = (id, anchor) => {
+				console.warn('fdaffdasf')
 				if (id in anchorMap) {
 					anchorMap[id].forEach(m => m.clear())
 					delete anchorMap[id]
@@ -254,11 +255,12 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 				for (let key in anchorMap) removeId(key)
 			}
 
-			const socket = io('http://localhost:4000')
+			const socket = io('http://localhost:5000')
 			socket.on('connect', () => {
 				socket.on('disconnect', () => clearAll())
 
 				socket.once('initialize', e => {
+					console.warn('asdf')
 					for (let id in e.anchors) socket.id !== id && setAnchor(id, e.anchors[id])
 					for (let id in e.names) socket.id !== id && addName(id, e.names[id])
 				})
@@ -281,6 +283,7 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 			})
 			return () => {
 				sharedoc.destroy()
+				socket.disconnect()
 				codeMirror.toTextArea()
 			}
 		},
