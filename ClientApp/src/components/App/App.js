@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { createContext, useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { createGlobalStyle } from 'styled-components'
 
 import Toolbar from '../Toolbar/Toolbar'
 import Sidebar from '../Sidebar/Sidebar'
 import Paper from '../Paper/Paper'
+import { mobileMediaQuery } from '../../config/constants'
 
 import { requestUserData } from '../../actions/user'
 
@@ -44,18 +45,22 @@ const GlobalStyle = createGlobalStyle`
     }
 `
 
+export const IsMobileContext = createContext()
+
 const App = ({ requestUserData, nameHash }) => {
+	const mobileState = useState(matchMedia(mobileMediaQuery).matches)
+
 	useEffect(() => {
 		requestUserData()
 	}, [])
 
 	return (
-		<div>
+		<IsMobileContext.Provider value={mobileState}>
 			<Toolbar />
 			<Sidebar />
 			<Paper />
 			<GlobalStyle />
-		</div>
+		</IsMobileContext.Provider>
 	)
 }
 

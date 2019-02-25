@@ -24,7 +24,8 @@ const Menu = ({
 	const clickAwayRef = useRef(createRef())
 	const [isMenuOpen, setMenuOpen] = useState(false)
 
-	const toggleMenu = () => {
+	const toggleMenu = e => {
+		e.stopPropagation()
 		if (isMenuOpen) {
 			setMenuOpen(false)
 		} else {
@@ -36,9 +37,7 @@ const Menu = ({
 	const options = children.filter(child => child.type !== OpenMenu)
 
 	const hideOnClickAway = event => {
-		if (!event.path.some(el => el === clickAwayRef.current)) {
-			setMenuOpen(false)
-		}
+		setMenuOpen(false)
 	}
 
 	useEffect(() => {
@@ -47,7 +46,7 @@ const Menu = ({
 	}, [])
 
 	return (
-		<ContainerTag onClick={() => toggleMenu()} ref={clickAwayRef}>
+		<ContainerTag onClick={toggleMenu} ref={clickAwayRef}>
 			{open && open.props.children}
 			<OptionsWrapper visible={isMenuOpen}>
 				<OptionsContainer onClick={e => e.stopPropagation()}>

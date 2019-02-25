@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Editor from '../Editor/Editor'
@@ -79,7 +80,9 @@ const mapStateToProps = ({ renderMarkdown, editor: { codeMirror } }) => ({ rende
 
 const mapDispatchToProps = { toggleRenderMarkdown }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Paper)
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Paper)
+)

@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import Modal from '../common/Modal'
 import TextInput from '../common/TextInput'
 import { getShareLink } from '../../actions/shareLink'
+import { baseApiUrl } from '../../config/constants'
 
 const Title = styled.h2`
 	font-weight: 300;
@@ -27,7 +28,7 @@ const ShareLinkModal = ({ visible, onClose, user, getShareLink, shareLink }) => 
 			<Title>Send this link to your friends to share a file with them</Title>
 			<LinkInput
 				placeholder="Generating a link for you"
-				value={shareLink.link ? `${window.location.origin}/${shareLink.link}` : ''}
+				value={shareLink.link ? `${baseApiUrl}/share/${shareLink.link}` : ''}
 				onChange={() => {}}
 			/>
 		</Modal>

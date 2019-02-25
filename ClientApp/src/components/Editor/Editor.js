@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, createRef } from 'react'
+import React, { useLayoutEffect, useRef, createRef } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
@@ -23,48 +23,60 @@ const FakeButtonsElement = styled.div`
 	display: none;
 `
 
+const UserList = styled.ul`
+	list-style: none;
+	margin: 0;
+	& li {
+		width: 25px;
+		height: 25px;
+		margin: 2px;
+		color: white;
+		float: right;
+		text-align: center;
+		line-height: 25px;
+	}
+`
+
 const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
-	const editorRef = useRef(createRef())
+	const editorRef = useRef()
+	const userListRef = useRef()
 
 	const currentFile =
 		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
 
-	useEffect(() => {
-		const pagedownConverter = new PagedownConverter.Converter()
-		const pagedownEditor = new PagedownEditor.Editor(pagedownConverter)
-		const codeMirror = CodeMirror.fromTextArea(editorRef.current, {
-			value: '',
-			mode: {
-				name: 'markdown',
-				highlightFormatting: true,
-				maxBlockquoteDepth: 3,
-				fencedCodeBlockHighlighting: true,
-			},
-			lineWrapping: true,
-		})
-		pagedownEditor.run(codeMirror)
-		const doClick = name =>
-			pagedownEditor.uiManager.buttons[name] && pagedownEditor.uiManager.buttons[name].onclick()
-		setCmInstance({ codeMirror, doClick })
-	}, [])
-
-	useEffect(
+	useLayoutEffect(
 		() => {
 			if (user.ownFiles.length && match.params.nameHash && !currentFile.nameHash) history.push('/')
 		},
 		[user, match.params.nameHash, currentFile]
 	)
 
-	useEffect(
+	useLayoutEffect(
 		() => {
-			if (!currentFile.nameHash) return
+			const pagedownConverter = new PagedownConverter.Converter()
+			const pagedownEditor = new PagedownEditor.Editor(pagedownConverter)
+			const codeMirror = CodeMirror.fromTextArea(editorRef.current, {
+				value: '',
+				mode: {
+					name: 'markdown',
+					highlightFormatting: true,
+					maxBlockquoteDepth: 3,
+					fencedCodeBlockHighlighting: true,
+				},
+				shared: true,
+				lineWrapping: true,
+			})
+			pagedownEditor.run(codeMirror)
+			const doClick = name =>
+				pagedownEditor.uiManager.buttons[name] && pagedownEditor.uiManager.buttons[name].onclick()
+			setCmInstance({ codeMirror, doClick })
+			if (!currentFile.nameHash) return () => codeMirror.toTextArea()
 			let stopWatch = false
 
 			ShareDB.types.register(otText.type)
 
 			const sharews = new WebSocket(`ws://localhost:4000`)
 			const shareconn = new ShareDB.Connection(sharews)
-
 			const sharedoc = shareconn.get('docs', currentFile.nameHash)
 			/*
             sharedoc.fetch(function(err) {
@@ -75,8 +87,6 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
                 }
             })
             */
-
-			console.log(sharedoc)
 
 			codeMirror.on('change', (ed, chg) => {
 				if (stopWatch) return
@@ -135,7 +145,7 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 			})
 
 			const addName = (id, name) => {
-				const userslist = document.querySelector('#users')
+				const userslist = userListRef.current
 				const usericon = document.createElement('li')
 				usericon.classList.add(`u-${id}`)
 				usericon.innerHTML = name
@@ -198,7 +208,7 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 			}
 
 			const removeId = id => {
-				document.querySelector(`#users li.u-${id}`).remove()
+				userListRef.current.querySelector(`li.u-${id}`).remove()
 				document.querySelector(`#style-${id}`).remove()
 				if (id in anchorMap) {
 					anchorMap[id].forEach(m => m.clear())
@@ -269,12 +279,17 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 					removeId(e.id)
 				})
 			})
+			return () => {
+				sharedoc.destroy()
+				codeMirror.toTextArea()
+			}
 		},
 		[currentFile.nameHash]
 	)
 
 	return (
 		<>
+			<UserList ref={userListRef} />
 			<textarea ref={editorRef} />
 			<FakeButtonsElement id="wmd-button-bar" />
 		</>

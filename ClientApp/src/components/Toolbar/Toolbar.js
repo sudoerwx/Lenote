@@ -9,6 +9,7 @@ import Menu, { OpenMenu } from '../common/Menu'
 import { useModal } from '../common/Modal'
 import ShareLinkModal from './ShareLinkModal'
 import { logout } from '../../actions/user'
+import useMatchMobile from '../hooks/useMatchMobile'
 
 const Button = styled.div`
 	cursor: pointer;
@@ -84,6 +85,7 @@ const MenuButton = styled.div`
 
 const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout, match, history }) => {
 	const [shareLinkVisible, hideShareLink, showShareLink] = useModal()
+	const isMobile = useMatchMobile()
 
 	const currentFile =
 		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
@@ -102,9 +104,11 @@ const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout, match, hi
 						<MenuButton onClick={showShareLink}>Get shareable link</MenuButton>
 					</Menu>
 				</Group>
-				<Group>
-					<Buttons />
-				</Group>
+				{!isMobile && (
+					<Group>
+						<Buttons />
+					</Group>
+				)}
 				<Group>
 					{user.name ? (
 						<Menu OptionsContainer={MenuButtonsContainer}>
