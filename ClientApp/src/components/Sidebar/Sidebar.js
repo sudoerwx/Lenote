@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { createFile, deleteFile } from '../../actions/user'
 import { useModal } from '../common/Modal'
 import CreateFileModal from './CreateFileModal'
+import useMatchMobile from '../hooks/useMatchMobile'
 import { ReactComponent as DeleteIcon } from '../../icons/delete.svg'
 
 const StyledSidebar = styled.div`
@@ -68,9 +69,12 @@ const Text = styled.p`
 
 const Sidebar = ({ user, createFile, deleteFile, match, history }) => {
 	const [createFileVisible, hideCreateFile, showCreateFile] = useModal()
+	const isMobile = useMatchMobile()
 
 	const currentFile =
 		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
+
+	if (isMobile) return null
 
 	return (
 		<StyledSidebar>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
@@ -23,6 +24,13 @@ const StyledToolbar = styled.div`
 	position: fixed;
 	top: 0;
 	left: 0;
+	z-index: 2;
+`
+const BottomToolbar = styled.div`
+	position: absolute;
+	bottom: 0;
+	width: 100vw;
+	background-color: var(--c-lightgrey-bg);
 	z-index: 2;
 `
 
@@ -83,7 +91,7 @@ const MenuButton = styled.div`
 	cursor: pointer;
 `
 
-const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout, match, history }) => {
+const Toolbar = ({ user, logout, match, history }) => {
 	const [shareLinkVisible, hideShareLink, showShareLink] = useModal()
 	const isMobile = useMatchMobile()
 
@@ -104,7 +112,14 @@ const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout, match, hi
 						<MenuButton onClick={showShareLink}>Get shareable link</MenuButton>
 					</Menu>
 				</Group>
-				{!isMobile && (
+				{isMobile ? (
+					createPortal(
+						<BottomToolbar>
+							<Buttons dark />
+						</BottomToolbar>,
+						document.body
+					)
+				) : (
 					<Group>
 						<Buttons />
 					</Group>
@@ -130,7 +145,7 @@ const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user, logout, match, hi
 	)
 }
 
-const mapStateToProps = ({ renderMarkdown, user }) => ({ renderMarkdown, user })
+const mapStateToProps = ({ user }) => ({ user })
 
 const mapDispatchToProps = { logout }
 

@@ -1,9 +1,8 @@
-import { RECEIVE_USER_DATA, LOGOUT, CREATE_FILE_SUCCESS, DELETE_FILE_SUCCESS } from '../actions/user'
+import { RECEIVE_USER_DATA, LOGOUT, CREATE_FILE_SUCCESS } from '../actions/user'
 
 const initialState = {
 	ownFiles: [],
 	secondFiles: [],
-	currentFile: {},
 }
 
 export default (state = initialState, action) => {
@@ -16,7 +15,6 @@ export default (state = initialState, action) => {
 			return {
 				...state,
 				ownFiles: [...state.ownFiles, action.data],
-				currentFile: action.data,
 			}
 		default:
 			return state

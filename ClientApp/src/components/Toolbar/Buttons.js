@@ -7,16 +7,22 @@ import ButtonList from './ButtonList'
 const StyledButtons = styled.div`
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
+	justify-content: center;
 	svg {
-		margin: 0 15px;
+		margin: 15px;
 		cursor: pointer;
 	}
 `
 
-const Buttons = ({ editor }) => (
+const Buttons = ({ editor, dark }) => (
 	<StyledButtons>
 		{ButtonList.map(({ Icon, method }, index) => (
-			<Icon key={index} onClick={() => editor.doClick(method)} fill="var(--c-lightgrey-text)" />
+			<Icon
+				key={index}
+				onClick={() => editor.doClick(method)}
+				fill={`var(--c-${dark ? 'dark' : 'light'}grey-text)`}
+			/>
 		))}
 	</StyledButtons>
 )

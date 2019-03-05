@@ -22,8 +22,8 @@ const GlobalStyle = createGlobalStyle`
     :root {
         font-size: 18px;
 
-		--container-width: 1200px;
-		--max-width: 1700px;
+        --container-width: 1200px;
+        --max-width: 1700px;
 	
         --c-lightgrey-bg: #eee;
 		--c-darkgrey-bg: #3E3E3E;
@@ -42,12 +42,16 @@ const GlobalStyle = createGlobalStyle`
 			--container-width: 70vw;
 			--max-width: 100vw;
 		}
+        @media (max-width: 1160px) {
+            --container-width: calc(100vw - 40px);
+            --max-width: 100vw;
+        }
     }
 `
 
 export const IsMobileContext = createContext()
 
-const App = ({ requestUserData, nameHash }) => {
+const App = ({ requestUserData }) => {
 	const mobileState = useState(matchMedia(mobileMediaQuery).matches)
 
 	useEffect(() => {
