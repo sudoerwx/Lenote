@@ -17,6 +17,7 @@ exports = module.exports = function(io) {
     })
   );
 
+<<<<<<< Updated upstream
   const anchors = {};
   const names = {};
   io.on("connection", client => {
@@ -25,6 +26,14 @@ exports = module.exports = function(io) {
       Math.floor("A".charCodeAt(0) + Math.random() * 26)
     );
     anchors[id] = [0, 0];
+=======
+	const anchors = {}
+	const names = {}
+	io.on('connection', client => {
+		const id = client.id
+		names[id] = client.request.user.photoURI
+		anchors[id] = [0, 0]
+>>>>>>> Stashed changes
 
     // send client its id and anchor and names obj
     client.emit("initialize", { anchors, names });

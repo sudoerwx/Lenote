@@ -17,7 +17,6 @@ const Menu = ({
 	children,
 	ContainerTag = Container,
 	OptionsContainer = 'div',
-	value,
 	onChange = () => {},
 	onOpen = () => {},
 }) => {
@@ -34,7 +33,7 @@ const Menu = ({
 		}
 	}
 	const open = children.find(child => child.type === OpenMenu)
-	const options = children.filter(child => child.type !== OpenMenu)
+	const options = children.filter(child => child.props && child.type !== OpenMenu)
 
 	const hideOnClickAway = event => {
 		setMenuOpen(false)

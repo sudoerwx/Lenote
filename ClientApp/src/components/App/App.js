@@ -18,6 +18,9 @@ const GlobalStyle = createGlobalStyle`
         font-family: Roboto;
 		background-color: var(--c-lightgrey-bg);
 		padding-top: 60px;
+        @media (max-width: 1160px) {
+            padding-bottom: 100px;
+        }
     }
     :root {
         font-size: 18px;
@@ -35,16 +38,16 @@ const GlobalStyle = createGlobalStyle`
         --c-darkgrey-text: #555;
 
 		@media (max-width: 1920px) {
-			--container-width: 60vw;
-			--max-width: calc(60vw + 500px);
+			--container-width: 60%;
+			--max-width: calc(60% + 500px);
 		}
 		@media (max-width: 1680px) {
-			--container-width: 70vw;
-			--max-width: 100vw;
+			--container-width: 70%;
+			--max-width: 100%;
 		}
         @media (max-width: 1160px) {
-            --container-width: calc(100vw - 40px);
-            --max-width: 100vw;
+            --container-width: calc(100% - 40px);
+            --max-width: 100%;
         }
     }
 `

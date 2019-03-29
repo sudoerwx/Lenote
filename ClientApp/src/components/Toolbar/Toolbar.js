@@ -27,15 +27,15 @@ const StyledToolbar = styled.div`
 	z-index: 2;
 `
 const BottomToolbar = styled.div`
-	position: absolute;
+	position: fixed;
 	bottom: 0;
-	width: 100vw;
+	width: 100%;
 	background-color: var(--c-lightgrey-bg);
 	z-index: 2;
 `
 
 const Wrapper = styled.div`
-	width: 100vw;
+	width: 100%;
 	max-width: var(--container-width);
 	height: 60px;
 	display: flex;
@@ -110,6 +110,7 @@ const Toolbar = ({ user, logout, match, history }) => {
 							</Button>
 						</OpenMenu>
 						<MenuButton onClick={showShareLink}>Get shareable link</MenuButton>
+						{isMobile && <MenuButton onClick={showShareLink}>Show all files</MenuButton>}
 					</Menu>
 				</Group>
 				{isMobile ? (

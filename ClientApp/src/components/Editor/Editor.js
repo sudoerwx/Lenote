@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, createRef } from 'react'
+import React, { useLayoutEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
@@ -168,7 +168,6 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 
 			const anchorMap = {}
 			const setAnchor = (id, anchor) => {
-				console.warn('fdaffdasf')
 				if (id in anchorMap) {
 					anchorMap[id].forEach(m => m.clear())
 					delete anchorMap[id]
@@ -181,7 +180,7 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 				const edindex = anchor.edindex
 
 				// Add selection
-				let stPos, edPos, range
+				let stPos, edPos
 				anchorMap[id] = []
 
 				if (stindex !== edindex) {
@@ -233,7 +232,7 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 
 			const hexToRgbaStyle = (hex, opacity) => {
 				hex = hex.replace('#', '')
-				let r, g, b, den
+				let r, g, b
 				if (hex.length === 3) {
 					r = hex[0] + hex[0]
 					g = hex[1] + hex[1]
@@ -260,9 +259,11 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 				socket.on('disconnect', () => clearAll())
 
 				socket.once('initialize', e => {
-					console.warn('asdf')
 					for (let id in e.anchors) socket.id !== id && setAnchor(id, e.anchors[id])
-					for (let id in e.names) socket.id !== id && addName(id, e.names[id])
+					for (let id in e.names) {
+						console.log(e)
+						socket.id !== id && addName(id, e.names[id])
+					}
 				})
 				socket.on('anchor-update', e => {
 					if (socket.id === e.id) return

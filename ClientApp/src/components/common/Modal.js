@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 
 const ModalWrapper = styled.div`
 	position: absolute;
-	width: 100vw;
+	width: 100%;
 	height: 100vh;
 	top: 0;
 	left: 0;

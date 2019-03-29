@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import Modal from '../common/Modal'
 import TextInput from '../common/TextInput'
@@ -32,12 +32,21 @@ const Button = styled.div`
 `
 
 const CreateFileModal = ({ visible, onClose, error, submit }) => {
-	const [fileName, handleNameChange] = useState('')
+	const [fileName, setFileName] = useState('')
+	const [touched, setTouched] = useState(false)
+
+	const handleNameChange = useCallback(
+		newFileName => {
+			if (!touched) setTouched(true)
+			setFileName(newFileName)
+		},
+		[touched]
+	)
 
 	return (
 		<Modal visible={visible} onClose={onClose}>
 			<Title>Enter new file name</Title>
-			<TextInput value={fileName} onChange={handleNameChange} error={error} />
+			<TextInput value={fileName} onChange={handleNameChange} error={touched && error} />
 			<ButtonsContainer>
 				<Button onClick={onClose}>Cancel</Button>
 				<Button disabled={Boolean(error(fileName))} onClick={() => submit(fileName).then(onClose)}>
