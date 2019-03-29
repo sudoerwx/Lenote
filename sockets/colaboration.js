@@ -12,7 +12,7 @@ exports = module.exports = function(io) {
     passportSocketIo.authorize({
       cookieParser: cookieParser, // the same middleware you registrer in express
       secret: keys.session.secret, // the session_secret to parse the cookie
-      store: mongoStore // we NEED to use a sessionstore. no memorystore please
+      store: mongoStore // we NEED to use a sessionstore.
     })
   );
 

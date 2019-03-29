@@ -4,6 +4,9 @@ const md5 = require("md5");
 const websockets = require("../sockets/websockets.js");
 const User = require("../database/Schema/userSchema.js");
 
+/**
+ * create file and send 200 status
+ */
 router.post("/:file", function(req, res) {
   if (req.user) {
     User.findById(req.user._id, (err, user) => {
@@ -16,10 +19,13 @@ router.post("/:file", function(req, res) {
           allowedPeople: []
         })
         .save()
+
         .then(user => {
           websockets.createFile(
             user.ownFiles[user.ownFiles.length - 1].nameHash
           );
+
+          res.sendStatus(200);
         });
     });
   } else {
@@ -27,6 +33,9 @@ router.post("/:file", function(req, res) {
   }
 });
 
+/**
+ * delete file hendler and send 200 status
+ */
 router.delete("/:file", function(req, res) {
   if (req.user) {
     User.findById(req.user._id, (err, user) => {
@@ -38,8 +47,9 @@ router.delete("/:file", function(req, res) {
             )
           ].nameHash
         )
+
         .then(err => {
-          if (!err)
+          if (!err) {
             user.ownFiles
               .splice(
                 user.ownFiles.findIndex(
@@ -49,6 +59,10 @@ router.delete("/:file", function(req, res) {
                 1
               )
               .save();
+            res.sendStatus(200);
+          } else {
+            res.sendStatus(500);
+          }
         });
     });
   } else {

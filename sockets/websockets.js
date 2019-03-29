@@ -15,38 +15,36 @@ const WebSocketJSONStream = require("websocket-json-stream");
 const shareserver = http.createServer();
 const sharewss = new WebSocket.Server({ server: shareserver });
 sharewss.on("connection", client =>
-	share.listen(new WebSocketJSONStream(client))
+  share.listen(new WebSocketJSONStream(client))
 );
 shareserver.listen(4000);
 console.log(`ShareDB listening on port 4000`);
 
 exports = module.exports = function(app) {
-	app.use("/file/create/:name", (res, req, next) => {
-		// Create the document if it hasn't been already
-		//  const sharedoc = shareconn.get('docs', 'Welcome')
-		// if (sharedoc.data == null) sharedoc.create("", 'ot-text');
-		exports.createFile(req.param.name);
-		next();
-	});
+  app.use("/file/create/:name", (res, req, next) => {
+    exports.createFile(req.param.name);
+    next();
+  });
 };
 
 exports.createFile = function(name, data) {
-	var doc = shareconn.get("docs", name);
-	doc.fetch(function(err) {
-		if (err) throw err;
-		if (doc.type === null) {
-			doc.create(data || "#Hello", "text");
-		}
-	});
+  var doc = shareconn.get("docs", name);
+  doc.fetch(function(err) {
+    if (err) throw err;
+    if (doc.type === null) {
+      doc.create(data || "#Hello", "text");
+    }
+  });
 };
+
 exports.deleteFile = function(name) {
-	var doc = shareconn.get("docs", name);
-	doc.fetch(function(err) {
-		if (err) throw err;
-		if (doc.type !== null) {
-			doc.del(function(err) {
-				if (err) throw err;
-			});
-		}
-	});
+  var doc = shareconn.get("docs", name);
+  doc.fetch(function(err) {
+    if (err) throw err;
+    if (doc.type !== null) {
+      doc.del(function(err) {
+        if (err) throw err;
+      });
+    }
+  });
 };
