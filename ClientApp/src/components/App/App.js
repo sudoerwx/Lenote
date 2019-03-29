@@ -1,10 +1,11 @@
-import React, { Component } from 'react'
+import React, { createContext, useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { createGlobalStyle } from 'styled-components'
 
 import Toolbar from '../Toolbar/Toolbar'
 import Sidebar from '../Sidebar/Sidebar'
 import Paper from '../Paper/Paper'
+import { mobileMediaQuery } from '../../config/constants'
 
 import { requestUserData } from '../../actions/user'
 
@@ -21,16 +22,17 @@ const GlobalStyle = createGlobalStyle`
     :root {
         font-size: 18px;
 
-		--container-width: 1200px;
-		--max-width: 1700px;
+        --container-width: 1200px;
+        --max-width: 1700px;
 	
         --c-lightgrey-bg: #eee;
 		--c-darkgrey-bg: #3E3E3E;
 		--c-white-hl: rgba(255, 255, 255, 0.65);
 		--c-blue-hl: #00B2FF;
+        --c-red-hl: rgba(255, 0, 0, 0.46);
         --c-lightgrey-text: #eee;
 		--c-grey-text: #B9B9B9;
-		--c-darkgrey-text: #555;
+        --c-darkgrey-text: #555;
 
 		@media (max-width: 1920px) {
 			--container-width: 60vw;
@@ -40,24 +42,30 @@ const GlobalStyle = createGlobalStyle`
 			--container-width: 70vw;
 			--max-width: 100vw;
 		}
+        @media (max-width: 1160px) {
+            --container-width: calc(100vw - 40px);
+            --max-width: 100vw;
+        }
     }
 `
 
-class App extends Component {
-	componentDidMount() {
-		this.props.requestUserData()
-	}
+export const IsMobileContext = createContext()
 
-	render() {
-		return (
-			<div>
-				<Toolbar />
-				<Sidebar />
-				<Paper />
-				<GlobalStyle />
-			</div>
-		)
-	}
+const App = ({ requestUserData }) => {
+	const mobileState = useState(matchMedia(mobileMediaQuery).matches)
+
+	useEffect(() => {
+		requestUserData()
+	}, [])
+
+	return (
+		<IsMobileContext.Provider value={mobileState}>
+			<Toolbar />
+			<Sidebar />
+			<Paper />
+			<GlobalStyle />
+		</IsMobileContext.Provider>
+	)
 }
 
 const mapDispatchToProps = { requestUserData }

@@ -1,11 +1,18 @@
 import React from 'react'
+import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { withRouter } from 'react-router-dom'
 import { ReactComponent as ArrowDownIcon } from '../../icons/arrow-down.svg'
 import Buttons from './Buttons'
 import Avatar from '../common/Avatar'
+import Menu, { OpenMenu } from '../common/Menu'
+import { useModal } from '../common/Modal'
+import ShareLinkModal from './ShareLinkModal'
+import { logout } from '../../actions/user'
+import useMatchMobile from '../hooks/useMatchMobile'
 
-const Button = styled.span`
+const Button = styled.div`
 	cursor: pointer;
 `
 
@@ -17,6 +24,13 @@ const StyledToolbar = styled.div`
 	position: fixed;
 	top: 0;
 	left: 0;
+	z-index: 2;
+`
+const BottomToolbar = styled.div`
+	position: absolute;
+	bottom: 0;
+	width: 100vw;
+	background-color: var(--c-lightgrey-bg);
 	z-index: 2;
 `
 
@@ -63,35 +77,81 @@ const UserName = styled.div`
 	}
 `
 
-const Toolbar = ({ renderMarkdown, toggleRenderMarkdown, user }) => (
-	<StyledToolbar>
-		<Wrapper>
-			<Group>
-				{user.currentFile.name}
-				<Button>
-					<ArrowDownIcon />
-				</Button>
-			</Group>
-			<Group>
-				<Buttons />
-			</Group>
-			<Group>
-				{user.name ? (
-					<UserName>
-						{user.name} {user.secondName}
-						{user.photoURI && <Avatar src={user.photoURI} />}
-					</UserName>
+const MenuButtonsContainer = styled.div`
+	margin-top: 10px;
+	width: 200px;
+	right: 0;
+	box-shadow: 4px 2px 2px rgba(0, 0, 0, 0.2);
+	background-color: white;
+	color: var(--c-darkgrey-text);
+`
+
+const MenuButton = styled.div`
+	padding: 15px 20px;
+	cursor: pointer;
+`
+
+const Toolbar = ({ user, logout, match, history }) => {
+	const [shareLinkVisible, hideShareLink, showShareLink] = useModal()
+	const isMobile = useMatchMobile()
+
+	const currentFile =
+		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
+
+	return (
+		<StyledToolbar>
+			<Wrapper>
+				<Group>
+					<Menu OptionsContainer={MenuButtonsContainer}>
+						<OpenMenu>
+							<Button>
+								{currentFile.name}
+								<ArrowDownIcon />
+							</Button>
+						</OpenMenu>
+						<MenuButton onClick={showShareLink}>Get shareable link</MenuButton>
+					</Menu>
+				</Group>
+				{isMobile ? (
+					createPortal(
+						<BottomToolbar>
+							<Buttons dark />
+						</BottomToolbar>,
+						document.body
+					)
 				) : (
-					<LoginButton href={`${process.env.REACT_APP_API_BASE_URL}/auth/google`}>Login</LoginButton>
+					<Group>
+						<Buttons />
+					</Group>
 				)}
-			</Group>
-		</Wrapper>
-	</StyledToolbar>
+				<Group>
+					{user.name ? (
+						<Menu OptionsContainer={MenuButtonsContainer}>
+							<OpenMenu>
+								<UserName>
+									{user.name} {user.secondName}
+									{user.photoURI && <Avatar src={user.photoURI} />}
+								</UserName>
+							</OpenMenu>
+							<MenuButton onClick={() => logout(history)}>Logout</MenuButton>
+						</Menu>
+					) : (
+						<LoginButton href={`${process.env.REACT_APP_API_BASE_URL}/auth/google`}>Login</LoginButton>
+					)}
+				</Group>
+			</Wrapper>
+			<ShareLinkModal visible={shareLinkVisible} onClose={hideShareLink} />
+		</StyledToolbar>
+	)
+}
+
+const mapStateToProps = ({ user }) => ({ user })
+
+const mapDispatchToProps = { logout }
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Toolbar)
 )
-
-const mapStateToProps = ({ renderMarkdown, user }) => ({ renderMarkdown, user })
-
-export default connect(
-	mapStateToProps,
-	null
-)(Toolbar)

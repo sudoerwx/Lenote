@@ -1,16 +1,21 @@
-import { RECEIVE_USER_DATA } from '../actions/user'
+import { RECEIVE_USER_DATA, LOGOUT, CREATE_FILE_SUCCESS } from '../actions/user'
 
-export default (
-	state = {
-		ownFiles: [],
-		secondFiles: [],
-		currentFile: {},
-	},
-	action
-) => {
+const initialState = {
+	ownFiles: [],
+	secondFiles: [],
+}
+
+export default (state = initialState, action) => {
 	switch (action.type) {
 		case RECEIVE_USER_DATA:
 			return { ...action.data, currentFile: action.data.ownFiles[0] }
+		case LOGOUT:
+			return initialState
+		case CREATE_FILE_SUCCESS:
+			return {
+				...state,
+				ownFiles: [...state.ownFiles, action.data],
+			}
 		default:
 			return state
 	}

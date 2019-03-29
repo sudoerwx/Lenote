@@ -6,17 +6,16 @@ import thunkMiddleware from 'redux-thunk'
 import registerServiceWorker from './registerServiceWorker'
 import rootReducer from './reducers'
 
-import App from './components/App/App'
+import RootRouter from './components/RootRouter/RootRouter'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunkMiddleware)
-));
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunkMiddleware)))
 
 render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
-);
+	<Provider store={store}>
+		<RootRouter />
+	</Provider>,
+	document.getElementById('root')
+)
 
 registerServiceWorker()

@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Editor from '../Editor/Editor'
@@ -57,35 +58,31 @@ const RenderButton = styled.div`
 	}
 `
 
-class Paper extends Component {
-	render() {
-		const { renderMarkdown, toggleRenderMarkdown, codeMirror } = this.props
-
-		return (
-			<Wrapper>
-				<StyledPaper>
-					<RenderButton onClick={toggleRenderMarkdown}>
-						{renderMarkdown ? <VisibilityOff /> : <VisibilityOn />}
-					</RenderButton>
-					<VisibilityWrapper visible={!renderMarkdown}>
-						<Editor />
-					</VisibilityWrapper>
-					<VisibilityWrapper visible={renderMarkdown}>
-						<MarkdownRenderWrapper>
-							<ReactMarkdown source={codeMirror.doc && codeMirror.doc.getValue()} />
-						</MarkdownRenderWrapper>
-					</VisibilityWrapper>
-				</StyledPaper>
-			</Wrapper>
-		)
-	}
-}
+const Paper = ({ renderMarkdown, toggleRenderMarkdown, codeMirror }) => (
+	<Wrapper>
+		<StyledPaper>
+			<RenderButton onClick={toggleRenderMarkdown}>
+				{renderMarkdown ? <VisibilityOff /> : <VisibilityOn />}
+			</RenderButton>
+			<VisibilityWrapper visible={!renderMarkdown}>
+				<Editor />
+			</VisibilityWrapper>
+			<VisibilityWrapper visible={renderMarkdown}>
+				<MarkdownRenderWrapper>
+					<ReactMarkdown source={codeMirror.doc && codeMirror.doc.getValue()} />
+				</MarkdownRenderWrapper>
+			</VisibilityWrapper>
+		</StyledPaper>
+	</Wrapper>
+)
 
 const mapStateToProps = ({ renderMarkdown, editor: { codeMirror } }) => ({ renderMarkdown, codeMirror })
 
 const mapDispatchToProps = { toggleRenderMarkdown }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Paper)
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Paper)
+)
