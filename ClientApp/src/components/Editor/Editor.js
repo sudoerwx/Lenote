@@ -27,17 +27,20 @@ const UserList = styled.ul`
 	list-style: none;
 	margin: 0;
 	& li {
-		width: 25px;
-		height: 25px;
 		margin: 2px;
 		color: white;
 		float: right;
 		text-align: center;
 		line-height: 25px;
+		img {
+			width: 25px;
+			height: 25px;
+			border-radius: 50%;
+		}
 	}
 `
 
-const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
+const Editor = ({ user, setCmInstance, match, history }) => {
 	const editorRef = useRef()
 	const userListRef = useRef()
 
@@ -99,7 +102,7 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 				if (addedText) sharedoc.submitOp([stindex, addedText])
 			})
 
-			codeMirror.on('cursorActivity', e => {
+			codeMirror.on('cursorActivity', () => {
 				const stPos = codeMirror.getCursor('start')
 				const edPos = codeMirror.getCursor('end')
 				const hdPos = codeMirror.getCursor('head')
@@ -112,7 +115,7 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 				socket.emit('anchor-update', { stindex, edindex, prefixed })
 			})
 
-			sharedoc.subscribe(d => {
+			sharedoc.subscribe(() => {
 				stopWatch = true
 
 				codeMirror.setValue(sharedoc.data || '')
@@ -136,7 +139,7 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 					const delCt = data.d
 					const stPos = codeMirror.posFromIndex(index)
 					const edPos = codeMirror.posFromIndex(index + delCt)
-					const range = { start: stPos, end: edPos }
+					// const range = { start: stPos, end: edPos }
 
 					stopWatch = true
 					codeMirror.replaceRange('', stPos, edPos)
@@ -144,18 +147,17 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 				}
 			})
 
-			const addName = (id, name) => {
+			const addName = (id, photoURL) => {
 				const userslist = userListRef.current
 				const usericon = document.createElement('li')
 				usericon.classList.add(`u-${id}`)
-				usericon.innerHTML = name
+				usericon.innerHTML = `<img src="${photoURL}" alt="" />`
 				userslist.appendChild(usericon)
 
 				const color = idToColor(id)
 				const styleTag = document.createElement('style')
 				styleTag.id = `style-${id}`
 				styleTag.innerHTML = `
-                .u-${id} { background-color: ${color}; }
                 .CodeMirror-line .u-${id}                   { background-color: ${hexToRgbaStyle(color, 0.35)}; }
                 .CodeMirror-line .u-${id}.cursor            { opacity: 1; }
                 .CodeMirror-line .u-${id}.cursor.left       { border-left: 2px solid ${color}; }
@@ -261,7 +263,6 @@ const Editor = ({ user, codeMirror, setCmInstance, match, history }) => {
 				socket.once('initialize', e => {
 					for (let id in e.anchors) socket.id !== id && setAnchor(id, e.anchors[id])
 					for (let id in e.names) {
-						console.log(e)
 						socket.id !== id && addName(id, e.names[id])
 					}
 				})
