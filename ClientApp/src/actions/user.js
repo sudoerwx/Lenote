@@ -18,13 +18,9 @@ export const receiveUserData = data => ({
 })
 
 export const logout = history => async dispatch => {
-	try {
-		await fetch('/auth/logout')
-		dispatch(logoutSuccess())
-		history.push('/')
-	} catch (err) {
-		console.warn(err)
-	}
+	await fetch('/auth/logout')
+	dispatch(logoutSuccess())
+	history.push('/')
 }
 
 export const logoutSuccess = () => ({
@@ -34,6 +30,7 @@ export const logoutSuccess = () => ({
 export const createFile = name => async dispatch => {
 	try {
 		const { data } = await fetch(`/file/${name}`, { method: 'POST' })
+		console.warn(data)
 		dispatch(createFileSuccess(data))
 	} catch (err) {
 		console.warn(err)

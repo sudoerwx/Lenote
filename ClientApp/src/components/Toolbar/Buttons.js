@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 
 import ButtonList from './ButtonList'
+import DialogStyle from './DialogStyle'
 
 const StyledButtons = styled.div`
 	display: flex;
@@ -16,15 +17,18 @@ const StyledButtons = styled.div`
 `
 
 const Buttons = ({ editor, dark }) => (
-	<StyledButtons>
-		{ButtonList.map(({ Icon, method }, index) => (
-			<Icon
-				key={index}
-				onClick={() => editor.doClick(method)}
-				fill={`var(--c-${dark ? 'dark' : 'light'}grey-text)`}
-			/>
-		))}
-	</StyledButtons>
+	<>
+		<StyledButtons>
+			{ButtonList.map(({ Icon, method }, index) => (
+				<Icon
+					key={index}
+					onClick={() => editor.doClick(method)}
+					fill={`var(--c-${dark ? 'dark' : 'light'}grey-text)`}
+				/>
+			))}
+		</StyledButtons>
+		<DialogStyle />
+	</>
 )
 
 export default connect(({ editor }) => ({ editor }))(Buttons)
