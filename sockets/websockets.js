@@ -18,7 +18,6 @@ sharewss.on("connection", client =>
   share.listen(new WebSocketJSONStream(client))
 );
 shareserver.listen(4000);
-console.log(`ShareDB listening on port 4000`);
 
 exports = module.exports = function(app) {
   app.use("/file/create/:name", (res, req, next) => {
