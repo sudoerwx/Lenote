@@ -5,11 +5,11 @@ const websockets = require("../sockets/websockets.js");
 const User = require("../database/Schema/userSchema.js");
 
 /**
- * create fole and send list of files
+ * create fole and  file
  */
 router.post("/:file", function(req, res) {
   if (req.user) {
-    const a = User.findById(req.user._id, (err, user) => {
+     User.findById(req.user._id, (err, user) => {
       user.ownFiles.push({
         name: req.params.file,
         nameHash: md5(req.params.file + user.id),
@@ -21,7 +21,7 @@ router.post("/:file", function(req, res) {
 
       websockets.createFile(user.ownFiles[user.ownFiles.length - 1].nameHash);
 
-      res.send(user.ownFiles);
+      res.send(user.ownFiles[user.ownFiles.length - 1].nameHash);
     });
   } else {
     res.sendStatus(401);
