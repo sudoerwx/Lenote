@@ -1,4 +1,4 @@
-import { RECEIVE_USER_DATA, LOGOUT, CREATE_FILE_SUCCESS } from '../actions/user'
+import { RECEIVE_USER_DATA, LOGOUT, CREATE_FILE_SUCCESS, DELETE_FILE_SUCCESS } from '../actions/user'
 
 const initialState = {
 	ownFiles: [],
@@ -15,6 +15,11 @@ export default (state = initialState, action) => {
 			return {
 				...state,
 				ownFiles: [...state.ownFiles, action.data],
+			}
+		case DELETE_FILE_SUCCESS:
+			return {
+				...state,
+				ownFiles: state.ownFiles.filter(({ nameHash }) => nameHash !== action.nameHash),
 			}
 		default:
 			return state

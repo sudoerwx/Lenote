@@ -28,24 +28,15 @@ export const logoutSuccess = () => ({
 })
 
 export const createFile = name => async dispatch => {
-	try {
-		const { data } = await fetch(`/file/${name}`, { method: 'POST' })
-		console.warn(data)
-		dispatch(createFileSuccess(data))
-	} catch (err) {
-		console.warn(err)
-		dispatch(createFileSuccess(name)) // TODO: delete when backend is finished
-	}
+	const data = await fetch(`/file/${name}`, { method: 'POST' })
+	dispatch(createFileSuccess(name, await data.text()))
 }
 
-export const createFileSuccess = name => ({
+export const createFileSuccess = (name, nameHash) => ({
 	type: CREATE_FILE_SUCCESS,
 	data: {
 		name,
-		nameHash: name
-			.split('')
-			.reverse()
-			.join(''),
+		nameHash,
 	},
 })
 
