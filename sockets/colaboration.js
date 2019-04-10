@@ -24,6 +24,9 @@ exports = module.exports = function(io) {
 		names[id] = client.request.user.photoURI
 		anchors[id] = [0, 0]
 
+    client.on("joinRoom",room=>{
+      client.join(room)
+    })
     // send client its id and anchor and names obj
     client.emit("initialize", { anchors, names });
 

@@ -258,6 +258,7 @@ const Editor = ({ user, setCmInstance, match, history }) => {
 
 			const socket = io('http://localhost:5000')
 			socket.on('connect', () => {
+				socket.emit("joinRoom",currentFile.nameHash)
 				socket.on('disconnect', () => clearAll())
 
 				socket.once('initialize', e => {
