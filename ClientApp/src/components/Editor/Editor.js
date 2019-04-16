@@ -45,11 +45,13 @@ const Editor = ({ user, setCmInstance, match, history }) => {
 	const userListRef = useRef()
 
 	const currentFile =
-		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
+		match.params.nameHash === '404'
+			? { nameHash: 404, name: '404' }
+			: [...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
 
 	useLayoutEffect(
 		() => {
-			if (user.ownFiles.length && match.params.nameHash && !currentFile.nameHash) history.push('/')
+			if (user.ownFiles.length && match.params.nameHash && !currentFile.nameHash) history.push('/404')
 		},
 		[user, match.params.nameHash, currentFile]
 	)
@@ -73,7 +75,18 @@ const Editor = ({ user, setCmInstance, match, history }) => {
 			const doClick = name =>
 				pagedownEditor.uiManager.buttons[name] && pagedownEditor.uiManager.buttons[name].onclick()
 			setCmInstance({ codeMirror, doClick })
-			if (!currentFile.nameHash) return () => codeMirror.toTextArea()
+
+			if (match.params.nameHash === '404')
+				codeMirror.setValue(`Don't panic
+=========
+### Page not found
+
+Looks like you have opened a wrong url or the file no longer exists
+
+If not, we're probably already working on resolving the issue`)
+
+			if (!currentFile.nameHash || match.params.nameHash === '404') return codeMirror.toTextArea
+
 			let stopWatch = false
 
 			ShareDB.types.register(otText.type)
@@ -90,7 +103,6 @@ const Editor = ({ user, setCmInstance, match, history }) => {
                 }
             })
             */
-
 			codeMirror.on('change', (ed, chg) => {
 				if (stopWatch) return
 
@@ -98,8 +110,12 @@ const Editor = ({ user, setCmInstance, match, history }) => {
 				const delta = chg.removed.join('\n').length
 				const addedText = chg.text.join('\n')
 
-				if (delta) sharedoc.submitOp([stindex, { d: delta }])
-				if (addedText) sharedoc.submitOp([stindex, addedText])
+				try {
+					if (delta) sharedoc.submitOp([stindex, { d: delta }])
+					if (addedText) sharedoc.submitOp([stindex, addedText])
+				} catch (err) {
+					history.push('/404')
+				}
 			})
 
 			codeMirror.on('cursorActivity', () => {
@@ -258,9 +274,8 @@ const Editor = ({ user, setCmInstance, match, history }) => {
 
 			const socket = io('http://localhost:5000')
 			socket.on('connect', () => {
-				socket.emit("joinRoom",currentFile.nameHash)
-				
-				
+				socket.emit('joinRoom', currentFile.nameHash)
+
 				socket.on('disconnect', () => clearAll())
 
 				socket.once('initialize', e => {

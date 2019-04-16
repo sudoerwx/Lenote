@@ -43,7 +43,7 @@ export const createFileSuccess = (name, nameHash) => ({
 export const deleteFile = nameHash => async dispatch => {
 	try {
 		await fetch(`/file/${nameHash}`, { method: 'DELETE' })
-		dispatch(deleteFileSuccess(nameHash))
+		return dispatch(deleteFileSuccess(nameHash))
 	} catch (err) {
 		console.warn(err)
 	}

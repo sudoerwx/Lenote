@@ -76,9 +76,10 @@ const FileList = ({ user, createFile, deleteFile, match, history }) => {
 						>
 							{name}
 							<DeleteIcon
-								onClick={e => {
+								onClick={async e => {
 									e.stopPropagation()
-									deleteFile(nameHash)
+									await deleteFile(nameHash)
+									history.push('/')
 								}}
 							/>
 						</Item>
@@ -96,9 +97,10 @@ const FileList = ({ user, createFile, deleteFile, match, history }) => {
 						>
 							{name}
 							<DeleteIcon
-								onClick={e => {
+								onClick={async e => {
 									e.stopPropagation()
-									deleteFile(nameHash)
+									await deleteFile(nameHash)
+									history.push('/')
 								}}
 							/>
 						</Item>

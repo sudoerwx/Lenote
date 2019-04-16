@@ -22,6 +22,11 @@ const GlobalStyle = createGlobalStyle`
             padding-bottom: 100px;
         }
     }
+
+    body, html{
+        overflow-x: hidden;
+    }
+
     :root {
         font-size: 18px;
 
@@ -56,6 +61,7 @@ export const IsMobileContext = createContext()
 
 const App = ({ requestUserData }) => {
 	const mobileState = useState(matchMedia(mobileMediaQuery).matches)
+	const [mobileSidebarOpen, toggleMobileSidebar] = useState(false)
 
 	useEffect(() => {
 		requestUserData()
@@ -63,9 +69,9 @@ const App = ({ requestUserData }) => {
 
 	return (
 		<IsMobileContext.Provider value={mobileState}>
-			<Toolbar />
-			<Sidebar />
-			<Paper />
+			<Toolbar toggleMobileSidebar={toggleMobileSidebar} />
+			<Sidebar mobileSidebarOpen={mobileSidebarOpen} />
+			<Paper mobileSidebarOpen={mobileSidebarOpen} />
 			<GlobalStyle />
 		</IsMobileContext.Provider>
 	)

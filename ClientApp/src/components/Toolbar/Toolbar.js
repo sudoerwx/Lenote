@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { ReactComponent as ArrowDownIcon } from '../../icons/arrow-down.svg'
+import { ReactComponent as BurgerIcon } from '../../icons/burger.svg'
 import Buttons from './Buttons'
 import Avatar from '../common/Avatar'
 import Menu, { OpenMenu } from '../common/Menu'
@@ -13,6 +14,8 @@ import { logout } from '../../actions/user'
 import useMatchMobile from '../hooks/useMatchMobile'
 
 const Button = styled.div`
+	display: flex;
+	align-items: center;
 	cursor: pointer;
 `
 
@@ -26,6 +29,7 @@ const StyledToolbar = styled.div`
 	left: 0;
 	z-index: 2;
 `
+
 const BottomToolbar = styled.div`
 	position: fixed;
 	bottom: 0;
@@ -61,6 +65,10 @@ const Group = styled.div`
 	}
 `
 
+const BurgerButton = styled(BurgerIcon)`
+	margin: 0 15px 0 0 !important;
+`
+
 const LoginButton = styled.a`
 	font-weight: 500;
 	color: var(--c-blue-hl);
@@ -87,11 +95,12 @@ const MenuButtonsContainer = styled.div`
 `
 
 const MenuButton = styled.div`
+	display: flex;
 	padding: 15px 20px;
 	cursor: pointer;
 `
 
-const Toolbar = ({ user, logout, match, history }) => {
+const Toolbar = ({ user, logout, toggleMobileSidebar, match, history }) => {
 	const [shareLinkVisible, hideShareLink, showShareLink] = useModal()
 	const isMobile = useMatchMobile()
 
@@ -102,6 +111,12 @@ const Toolbar = ({ user, logout, match, history }) => {
 		<StyledToolbar>
 			<Wrapper>
 				<Group>
+					{isMobile && (
+						<BurgerButton
+							fill="var(--c-lightgrey-text)"
+							onClick={() => toggleMobileSidebar(prevState => !prevState)}
+						/>
+					)}
 					<Menu OptionsContainer={MenuButtonsContainer}>
 						<OpenMenu>
 							<Button>
@@ -110,7 +125,6 @@ const Toolbar = ({ user, logout, match, history }) => {
 							</Button>
 						</OpenMenu>
 						<MenuButton onClick={showShareLink}>Get shareable link</MenuButton>
-						{isMobile && <MenuButton onClick={showShareLink}>Show all files</MenuButton>}
 					</Menu>
 				</Group>
 				{isMobile ? (

@@ -23,6 +23,10 @@ const StyledPaper = styled.div`
 	padding: 30px;
 	background-color: white;
 	box-shadow: 10px 20px 20px rgba(0, 0, 0, 0.25);
+	@media (max-width: 1160px) {
+		transform: translateX(${({ mobileSidebarOpen }) => (mobileSidebarOpen ? 100 : 0)}%);
+		transition: transform 0.5s;
+	}
 `
 
 const VisibilityWrapper = styled.div`
@@ -58,12 +62,12 @@ const RenderButton = styled.div`
 	}
 `
 
-const Paper = ({ renderMarkdown, toggleRenderMarkdown, codeMirror }) => (
+const Paper = ({ renderMarkdown, toggleRenderMarkdown, mobileSidebarOpen, codeMirror }) => (
 	<Wrapper>
-		<StyledPaper>
-			<RenderButton onClick={toggleRenderMarkdown}>
-				{renderMarkdown ? <VisibilityOff /> : <VisibilityOn />}
-			</RenderButton>
+		<RenderButton onClick={toggleRenderMarkdown}>
+			{renderMarkdown ? <VisibilityOff /> : <VisibilityOn />}
+		</RenderButton>
+		<StyledPaper mobileSidebarOpen={mobileSidebarOpen}>
 			<VisibilityWrapper visible={!renderMarkdown}>
 				<Editor />
 			</VisibilityWrapper>
