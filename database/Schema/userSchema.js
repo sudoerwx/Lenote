@@ -1,11 +1,4 @@
 const mongoose = require("mongoose");
-const allowedPerson = new mongoose.Schema(
-	{
-		id: String,
-		name: String
-	},
-	{ _id: false }
-);
 const file = new mongoose.Schema(
 	{
 		name: String,
