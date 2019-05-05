@@ -1988,19 +1988,21 @@ import CodeMirror from 'codemirror'
 
 			if (isImage) {
 				if (!this.hooks.insertImageDialog(linkEnteredCallback))
-					ui.prompt(
-						this.getString('imagedialog'),
-						imageDefaultText,
-						linkEnteredCallback,
-						files =>
-							!!files &&
-							!!files[0] &&
-							fetch('/img/', {
-								method: 'POST',
-								mode: 'cors',
-								body: files[0],
-							})
-					)
+					ui.prompt(this.getString('imagedialog'), imageDefaultText, linkEnteredCallback, files => {
+						if (!files || !files[0]) return
+
+						const formData = new FormData()
+						formData.append('file', files[0])
+
+						fetch('/img/', {
+							method: 'POST',
+							mode: 'cors',
+							headers: {
+								'Content-Type': 'multipart/form-data',
+							},
+							body: formData,
+						})
+					})
 			} else {
 				if (!this.hooks.insertLinkDialog(linkEnteredCallback))
 					ui.prompt(this.getString('linkdialog'), linkDefaultText, linkEnteredCallback)
