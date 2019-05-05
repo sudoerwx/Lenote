@@ -1997,9 +1997,7 @@ import CodeMirror from 'codemirror'
 						fetch('/img/', {
 							method: 'POST',
 							mode: 'cors',
-							headers: {
-								'Content-Type': 'multipart/form-data',
-							},
+							
 							body: formData,
 						})
 					})
