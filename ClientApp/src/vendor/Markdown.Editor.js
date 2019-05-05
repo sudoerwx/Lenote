@@ -1998,7 +1998,7 @@ import CodeMirror from 'codemirror'
 							fetch('/img/', {
 								method: 'POST',
 								mode: 'cors',
-								body: { contentType: files[0].type, data: files[0] },
+								body: files[0],
 							})
 					)
 			} else {
