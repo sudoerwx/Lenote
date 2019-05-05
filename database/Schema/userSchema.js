@@ -18,14 +18,7 @@ const userSchema = new mongoose.Schema({
 	ownFiles: [file],
 	secondFiles: [file]
 });
-const link = new mongoose.Schema(
-	{
-		address: String,
-		sharedFile: file,
-		createdAt: { type: Date, expires: 86400, default: Date.now }
-	},
-	{ _id: false }
-);
+
 const User = mongoose.model("user", userSchema);
 
 exports = module.exports = User;
