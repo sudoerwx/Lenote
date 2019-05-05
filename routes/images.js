@@ -9,7 +9,6 @@ const upload = multer({ storage: storage });
  * send as answer Image
  */
 router.get("/:Hash", function(req, res) {
-	if (req.user) {
 		Image.findOne({ _id: req.params.Hash }, { __v: 0 }, (err, currentImage) => {
 			if (currentImage) {
 				currentImage.createdAt = Date.now();
@@ -20,9 +19,6 @@ router.get("/:Hash", function(req, res) {
 				res.sendStatus(204);
 			}
 		});
-	} else {
-		res.sendStatus(401);
-	}
 });
 
 /**
