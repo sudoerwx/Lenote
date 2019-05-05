@@ -1198,11 +1198,15 @@ import CodeMirror from 'codemirror'
 	// callback: The function which is executed when the prompt is dismissed, either via OK or Cancel.
 	//      It receives a single argument; either the entered text (if OK was chosen) or null (if Cancel
 	//      was chosen).
-	ui.prompt = function(text, defaultInputText, callback) {
+	//  fileChangeCallback: If not specified, <input type="file" doesn't get rendered.
+	//      It is called with a HTMLInputElement.files as an argument
+	//  fileType: The accepts attribute for input elements
+	ui.prompt = function(text, defaultInputText, callback, fileChangeCallback, fileType) {
 		// These variables need to be declared at this level since they are used
 		// in multiple functions.
 		var dialog // The dialog box.
 		var input // The text box where you enter the hyperlink.
+		var fileInput // The file input element.
 
 		if (defaultInputText === undefined) {
 			defaultInputText = ''
@@ -1277,6 +1281,16 @@ import CodeMirror from 'codemirror'
 			style.width = '80%'
 			style.marginLeft = style.marginRight = 'auto'
 			form.appendChild(input)
+
+			// The file input
+			if (fileChangeCallback) {
+				fileInput = doc.createElement('input')
+				fileInput.type = 'file'
+				fileInput.accept = fileType
+				fileInput.className = 'file-input'
+				fileInput.addEventListener('change', e => fileChangeCallback(e.target.files))
+				form.appendChild(fileInput)
+			}
 
 			// The ok button
 			var okButton = doc.createElement('input')
@@ -1974,7 +1988,19 @@ import CodeMirror from 'codemirror'
 
 			if (isImage) {
 				if (!this.hooks.insertImageDialog(linkEnteredCallback))
-					ui.prompt(this.getString('imagedialog'), imageDefaultText, linkEnteredCallback)
+					ui.prompt(
+						this.getString('imagedialog'),
+						imageDefaultText,
+						linkEnteredCallback,
+						files =>
+							!!files &&
+							!!files[0] &&
+							fetch('/img/', {
+								method: 'POST',
+								mode: 'cors',
+								body: { contentType: files[0].type, data: files[0] },
+							})
+					)
 			} else {
 				if (!this.hooks.insertLinkDialog(linkEnteredCallback))
 					ui.prompt(this.getString('linkdialog'), linkDefaultText, linkEnteredCallback)
