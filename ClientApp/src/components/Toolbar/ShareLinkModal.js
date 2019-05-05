@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import Modal from '../common/Modal'
 import TextInput from '../common/TextInput'
@@ -15,12 +16,22 @@ const LinkInput = styled(TextInput)`
 	width: calc(100% - 20px);
 `
 
-const ShareLinkModal = ({ visible, onClose, user, getShareLink, shareLink }) => {
+const ShareLinkModal = ({
+	visible,
+	onClose,
+	getShareLink,
+	shareLink,
+	match: {
+		params: { nameHash },
+	},
+}) => {
 	useEffect(
 		() => {
-			if (visible) getShareLink(user.currentFile.nameHash)
+			if (visible) {
+				getShareLink(nameHash)
+			}
 		},
-		[visible]
+		[visible, nameHash]
 	)
 
 	return (
@@ -35,11 +46,13 @@ const ShareLinkModal = ({ visible, onClose, user, getShareLink, shareLink }) => 
 	)
 }
 
-const mapStateToProps = ({ user, shareLink }) => ({ user, shareLink })
+const mapStateToProps = ({ shareLink }) => ({ shareLink })
 
 const mapDispatchToProps = { getShareLink }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(ShareLinkModal)
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(ShareLinkModal)
+)
