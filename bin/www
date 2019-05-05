@@ -28,7 +28,14 @@ var server = http.createServer(app);
  * Create Socket.IO server and connect sockets
  */
 var io = require('socket.io')(server);
-var editFileSocket = require('../sockets/editFileSocket')(io);
+var editFileSocket = require('../sockets/colaboration')(io);
+
+
+/**
+ * Create Share DB server
+ */
+
+
 
 /**
  * Listen on provided port, on all network interfaces.

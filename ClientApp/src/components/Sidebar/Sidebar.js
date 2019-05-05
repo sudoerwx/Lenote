@@ -1,64 +1,29 @@
-import React, { Fragment } from 'react'
+import React from 'react'
+import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
+import FileList from '../FileList/FileList'
 
 const StyledSidebar = styled.div`
-	margin-top: 40px;
+	padding-top: 40px;
 	width: calc((var(--max-width) - var(--container-width)) / 2);
-    position: fixed;
-    margin-left: 50%;
-    left: calc((var(--max-width) / -2))
-`
-// left: calc((var(--container-width) / -2) - (var(--max-width) - var(--container-width)) / 2)
-const Item = styled.div`
-	background-color: ${({ hl }) => hl ? 'var(--c-white-hl)' : 'transparent'};
-	border-left: ${({ hl }) => hl ? '4px' : 0} solid var(--c-blue-hl);
-	padding: 8px 21px;
-	padding-left: ${({ hl }) => hl ? '17px' : '21px'};
-	font-weight: 200;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	color: var(--c-darkgrey-text);
-	cursor: pointer;
-	&:hover {
-		color: black;
+	max-height: calc(100vh - 100px);
+	overflow-y: auto;
+	position: fixed;
+	margin-left: 50%;
+	left: calc((var(--max-width) / -2));
+	@media (max-width: 1160px) {
+		width: 100%;
+		max-height: calc(100vh - 200px);
+		opacity: ${({ mobileSidebarOpen }) => Number(mobileSidebarOpen)};
+		transform: translateX(${({ mobileSidebarOpen }) => (mobileSidebarOpen ? 0 : -100)}%);
+		transition: transform 0.5s, opacity 0.3s;
 	}
 `
 
-const Text = styled.p`
-	margin: 50px 0 3px 21px;
-	font-weight: 500;
-	font-size: .9rem;
-	text-transform: uppercase;
-	color: var(--c-grey-text);
-`
-
-const mockData = {
-	'Own files': [
-		{ name: 'Lorem Ipsum Dolor', id: 1, highlighted: true },
-		{ name: 'Sit Amet Consectetur', id: 2 },
-		{ name: 'Sed do eiusmod', id: 3 },
-		{ name: 'Tempor ut dolore', id: 4 },
-	],
-	'Other\'s files': [
-		{ name: 'Lorem Ipsum Dolor', id: 1 },
-		{ name: 'Sit Amet Consectetur', id: 2 },
-		{ name: 'Sed do eiusmod', id: 3 },
-		{ name: 'Tempor ut dolore', id: 4 },
-	],
-}
-
-const Sidebar = () => (
-	<StyledSidebar>
-		{Object.keys(mockData).map(key => (
-			<Fragment key={key}>
-				<Text>{key}</Text>
-				{mockData[key].map(({ name, highlighted, id }) => (
-					<Item key={id} hl={highlighted}>{name}</Item>
-				))}
-            </Fragment>
-		))}
+const Sidebar = ({ mobileSidebarOpen }) => (
+	<StyledSidebar mobileSidebarOpen={mobileSidebarOpen}>
+		<FileList />
 	</StyledSidebar>
 )
 
-export default Sidebar
+export default withRouter(Sidebar)
