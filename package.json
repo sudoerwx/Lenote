@@ -6,7 +6,7 @@
     "client": "cd ClientApp/ && npm start",
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
-    "heroku-postbuild": "cd ClientApp/ && npm install && npm build"
+    "heroku-postbuild": "cd ClientApp/ && npm install && npm run-script build"
   },
   "dependencies": {
     "babel-preset-env": "^1.7.0",
