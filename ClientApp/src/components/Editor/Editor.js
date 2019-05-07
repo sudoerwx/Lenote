@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import otText from 'ot-text'
 import ShareDB from 'sharedb/lib/client'
 import io from 'socket.io-client'
-import { baseApiUrl } from '../../config/constants'
+
 
 import { setCmInstance } from '../../actions/editor'
 
