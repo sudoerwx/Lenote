@@ -16,7 +16,7 @@ router.get(
 router.get(
 	"/google/callback",
 	passport.authenticate("google", {
-		successRedirect: process.env.NODE_ENV ? "/" : "http://localhost:3000/",
+		successRedirect: process.env.NODE_ENV ? "https://lenote.herokuapp.com/" : "http://localhost:3000/",
 		failureRedirect: "/auth/google"
 	})
 );
@@ -26,7 +26,7 @@ router.get(
  */
 router.get("/logout", function(req, res) {
 	req.logout();
-	res.redirect(process.env.NODE_ENV ? "/" : "http://localhost:3000/");
+	res.redirect(process.env.NODE_ENV ? "https://lenote.herokuapp.com/" : "http://localhost:3000/");
 });
 
 module.exports = router;
