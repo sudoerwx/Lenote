@@ -12,7 +12,7 @@ import { useModal } from '../common/Modal'
 import ShareLinkModal from './ShareLinkModal'
 import { logout } from '../../actions/user'
 import useMatchMobile from '../hooks/useMatchMobile'
-import { baseApiUrl } from '../../config/constants'
+
 
 const Button = styled.div`
 	display: flex;
@@ -152,7 +152,7 @@ const Toolbar = ({ user, logout, toggleMobileSidebar, match, history }) => {
 							<MenuButton onClick={() => logout(history)}>Logout</MenuButton>
 						</Menu>
 					) : (
-						<LoginButton href={`${baseApiUrl}/auth/google`}>Login</LoginButton>
+						<LoginButton href={`/auth/google`}>Login</LoginButton>
 					)}
 				</Group>
 			</Wrapper>
