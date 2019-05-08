@@ -32,7 +32,7 @@
 		"eject": "react-scripts eject"
 	},
 	"proxy": "http://localhost:5000/",
-	"homepage" : "https://lenote.herokuapp.com/",
+	"homepage": "https://lenote.herokuapp.com/",
 	"browserslist": [
 		">0.2%",
 		"not dead",
