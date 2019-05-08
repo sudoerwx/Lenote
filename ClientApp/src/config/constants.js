@@ -1,6 +1,4 @@
 export const baseApiUrl =
-	process.env.NODE_ENV === 'development'
-		? process.env.REACT_APP_API_BASE_URL
-		: window.location.href.replace(/^https/g, 'http')
+	process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_BASE_URL : `http://${window.location.hostname}`
 
 export const mobileMediaQuery = '(max-width: 1160px)'
