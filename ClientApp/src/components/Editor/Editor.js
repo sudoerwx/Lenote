@@ -6,8 +6,8 @@ import otText from 'ot-text'
 import ShareDB from 'sharedb/lib/client'
 import io from 'socket.io-client'
 
-
 import { setCmInstance } from '../../actions/editor'
+import { baseApiUrl } from '../../config/constants'
 
 import { default as PagedownConverter } from '../../vendor/Markdown.Converter'
 import { default as PagedownEditor } from '../../vendor/Markdown.Editor'
@@ -92,7 +92,7 @@ If not, we're probably already working on resolving the issue`)
 
 			ShareDB.types.register(otText.type)
 
-			const sharews = new WebSocket(`ws://localhost:4000`)
+			const sharews = new WebSocket(`ws://${baseApiUrl.replace('5000', '4000')}`)
 			const shareconn = new ShareDB.Connection(sharews)
 			const sharedoc = shareconn.get('docs', currentFile.nameHash)
 			/*
@@ -273,7 +273,7 @@ If not, we're probably already working on resolving the issue`)
 				for (let key in anchorMap) removeId(key)
 			}
 
-			const socket = io('http://localhost:5000')
+			const socket = io(`http://${baseApiUrl}`)
 			socket.on('connect', () => {
 				socket.emit('joinRoom', currentFile.nameHash)
 

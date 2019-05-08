@@ -152,7 +152,7 @@ const Toolbar = ({ user, logout, toggleMobileSidebar, match, history }) => {
 							<MenuButton onClick={() => logout(history)}>Logout</MenuButton>
 						</Menu>
 					) : (
-						<LoginButton href={`${baseApiUrl}/auth/google`}>Login</LoginButton>
+						<LoginButton href={`http://${baseApiUrl}/auth/google`}>Login</LoginButton>
 					)}
 				</Group>
 			</Wrapper>

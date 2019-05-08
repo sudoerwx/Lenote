@@ -6,7 +6,7 @@ export const getShareLink = nameHash => async dispatch => {
 
 		dispatch(receiveShareLink(await data.json()))
 	} catch (err) {
-		console.warn(err)
+		console.dir(err)
 	}
 }
 
