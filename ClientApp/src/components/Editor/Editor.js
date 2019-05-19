@@ -92,7 +92,7 @@ If not, we're probably already working on resolving the issue`)
 
 			ShareDB.types.register(otText.type)
 
-			const sharews = new WebSocket(`ws://${baseApiUrl.replace('5000', '4000')}`)
+			const sharews = new WebSocket(`ws://${baseApiUrl.replace(/(:5000)?$/, ':4000')}`)
 			const shareconn = new ShareDB.Connection(sharews)
 			const sharedoc = shareconn.get('docs', currentFile.nameHash)
 			/*
