@@ -1251,7 +1251,7 @@ import { baseApiUrl } from '../config/constants'
 			dialog.className = 'wmd-prompt-dialog'
 			dialog.style.padding = '10px;'
 			dialog.style.position = 'fixed'
-			dialog.style.width = '400px'
+			dialog.style.maxWidth = 'calc(100% - 70px)'
 			dialog.style.zIndex = '1001'
 
 			// The dialog text.
@@ -1327,20 +1327,11 @@ import { baseApiUrl } from '../config/constants'
 			form.appendChild(cancelButton)
 
 			util.addEvent(doc.body, 'keydown', checkEscape)
-			dialog.style.top = '50%'
-			dialog.style.left = '50%'
 			dialog.style.display = 'block'
 			if (uaSniffed.isIE_5or6) {
 				dialog.style.position = 'absolute'
-				dialog.style.top = doc.documentElement.scrollTop + 200 + 'px'
-				dialog.style.left = '50%'
 			}
 			doc.body.appendChild(dialog)
-
-			// This has to be done AFTER adding the dialog to the form if you
-			// want it to be centered.
-			dialog.style.marginTop = -(position.getHeight(dialog) / 2) + 'px'
-			dialog.style.marginLeft = -(position.getWidth(dialog) / 2) + 'px'
 		}
 
 		// Why is this in a zero-length timeout?

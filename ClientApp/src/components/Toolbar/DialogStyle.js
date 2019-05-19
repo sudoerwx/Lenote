@@ -6,6 +6,10 @@ export default createGlobalStyle`
     }
     .wmd-prompt-dialog {
         padding: 20px;
+        width: 400px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         background-color: white;
         box-shadow: 4px 2px 5px rgba(0, 0, 0, 0.15);
         border-radius: 5px;

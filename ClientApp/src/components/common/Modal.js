@@ -30,6 +30,8 @@ const ModalContent = styled.div`
 	border-radius: 5px;
 	padding: 20px;
 	box-shadow: 4px 2px 5px rgba(0, 0, 0, 0.15);
+	max-width: calc(100% - 70px);
+    width: 500px;
 `
 
 const Modal = ({ visible, onClose, children }) =>
