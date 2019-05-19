@@ -2,6 +2,7 @@
 
 import Markdown from './Markdown.Converter'
 import CodeMirror from 'codemirror'
+import { baseApiUrl } from '../config/constants'
 
 // needs Markdown.Converter.js at the moment
 ;(function() {
@@ -1207,6 +1208,7 @@ import CodeMirror from 'codemirror'
 		var dialog // The dialog box.
 		var input // The text box where you enter the hyperlink.
 		var fileInput // The file input element.
+		var fileInputLabel // The <label> element for a file input
 
 		if (defaultInputText === undefined) {
 			defaultInputText = ''
@@ -1287,9 +1289,14 @@ import CodeMirror from 'codemirror'
 				fileInput = doc.createElement('input')
 				fileInput.type = 'file'
 				fileInput.accept = fileType
-				fileInput.className = 'file-input'
-				fileInput.addEventListener('change', e => fileChangeCallback(e.target.files))
+				fileInput.id = 'file-input'
+				fileInput.addEventListener('change', e => fileChangeCallback(e.target.files, input))
+				fileInputLabel = doc.createElement('label')
+				fileInputLabel.htmlFor = 'file-input'
+				fileInputLabel.className = 'file-input'
+				fileInputLabel.innerText = 'Upload image'
 				form.appendChild(fileInput)
+				form.appendChild(fileInputLabel)
 			}
 
 			// The ok button
@@ -1988,19 +1995,28 @@ import CodeMirror from 'codemirror'
 
 			if (isImage) {
 				if (!this.hooks.insertImageDialog(linkEnteredCallback))
-					ui.prompt(this.getString('imagedialog'), imageDefaultText, linkEnteredCallback, files => {
-						if (!files || !files[0]) return
+					ui.prompt(
+						this.getString('imagedialog'),
+						imageDefaultText,
+						linkEnteredCallback,
+						(files, textInput) => {
+							if (!files || !files[0]) return
 
-						const formData = new FormData()
-						formData.append('file', files[0])
+							const formData = new FormData()
+							formData.append('file', files[0])
 
-						fetch('/img/', {
-							method: 'POST',
-							mode: 'cors',
-							
-							body: formData,
-						})
-					})
+							textInput.value = 'Uploading image...'
+
+							fetch('/img/', {
+								method: 'POST',
+								mode: 'cors',
+								body: formData,
+							})
+								.then(r => r.text())
+								.then(slug => (textInput.value = `http://${baseApiUrl}/img/${slug}`))
+						},
+						'image/*'
+					)
 			} else {
 				if (!this.hooks.insertLinkDialog(linkEnteredCallback))
 					ui.prompt(this.getString('linkdialog'), linkDefaultText, linkEnteredCallback)

@@ -44,5 +44,26 @@ export default createGlobalStyle`
                 background-color: rgba(0, 0, 0, 0.05)
             }
         }
+        input[type="file"] {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+        label.file-input {
+            display: block;
+            padding: 8px;
+            margin: 0 0 15px 30px;
+            width: fit-content;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.02);
+            transition: background-color 0.2s,color 0.2s;
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.1);
+                color: black;
+            }
+        }
     }
 `

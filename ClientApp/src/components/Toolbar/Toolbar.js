@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
@@ -101,9 +101,22 @@ const MenuButton = styled.div`
 	cursor: pointer;
 `
 
-const Toolbar = ({ user, logout, toggleMobileSidebar, match, history }) => {
+const Toolbar = ({ user, codeMirror, logout, toggleMobileSidebar, match, history }) => {
 	const [shareLinkVisible, hideShareLink, showShareLink] = useModal()
 	const isMobile = useMatchMobile()
+	const download = useCallback(
+		(filename, codeMirror) => () => {
+			const a = document.createElement('a')
+			const text = codeMirror.getValue()
+			a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
+			a.setAttribute('download', `${filename}.md`)
+			a.style.display = 'none'
+			document.body.appendChild(a)
+			a.click()
+			document.body.removeChild(a)
+		},
+		[]
+	)
 
 	const currentFile =
 		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
@@ -126,6 +139,7 @@ const Toolbar = ({ user, logout, toggleMobileSidebar, match, history }) => {
 							</Button>
 						</OpenMenu>
 						<MenuButton onClick={showShareLink}>Get shareable link</MenuButton>
+						<MenuButton onClick={download(currentFile.name, codeMirror)}>Export as .md</MenuButton>
 					</Menu>
 				</Group>
 				{isMobile ? (
@@ -161,7 +175,7 @@ const Toolbar = ({ user, logout, toggleMobileSidebar, match, history }) => {
 	)
 }
 
-const mapStateToProps = ({ user }) => ({ user })
+const mapStateToProps = ({ user, editor: { codeMirror } }) => ({ user, codeMirror })
 
 const mapDispatchToProps = { logout }
 
