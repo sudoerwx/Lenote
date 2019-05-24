@@ -48,19 +48,4 @@ router.post("/", upload.single("file"), function(req, res) {
 	}
 });
 
-/**
- * delete Image in DB and send 200 status
- */
-router.delete("/:Hash", function(req, res) {
-	if (req.user) {
-		Link.deleteOne({ _id: req.params.Hash }, err => {
-			if (err) {
-				res.sendStatus(204);
-			}
-			res.sendStatus(200);
-		});
-	} else {
-		res.sendStatus(401);
-	}
-});
 module.exports = router;

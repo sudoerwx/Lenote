@@ -55,7 +55,7 @@ app.use("/file", filesRouter);
 app.use("/link", linkRouter);
 // handle links
 app.use("/share", shareLinkHandler);
-// handle images and create/delete it
+// handle images and create it
 app.use("/img", imageRouter);
 
 app.use(express.static(path.resolve(__dirname, "./ClientApp/build")));
