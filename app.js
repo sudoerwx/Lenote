@@ -9,7 +9,8 @@ const passportSetup = require("./config/passport-setup");
 const passport = require("passport");
 const expressSession = require("express-session");
 const keys = require("./config/keys");
-const fs = require("fs");
+const cors = require('cors')
+
 
 // routers
 const filesRouter = require("./routes/files");
@@ -34,6 +35,7 @@ app.use(
 	})
 );
 
+app.use(cors())
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
