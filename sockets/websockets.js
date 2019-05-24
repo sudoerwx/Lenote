@@ -19,12 +19,7 @@ sharewss.on("connection", client =>
 );
 shareserver.listen(4000);
 
-exports = module.exports = function(app) {
-  app.use("/file/create/:name", (res, req, next) => {
-    exports.createFile(req.param.name);
-    next();
-  });
-};
+exports = module.exports;
 
 exports.createFile = function(name, data) {
   var doc = shareconn.get("docs", name);
