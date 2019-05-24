@@ -273,7 +273,7 @@ If not, we're probably already working on resolving the issue`)
 				for (let key in anchorMap) removeId(key)
 			}
 
-			const socket = io(`https://${baseApiUrl}`)
+			const socket = io(`http://${baseApiUrl}`)
 			socket.on('connect', () => {
 				socket.emit('joinRoom', currentFile.nameHash)
 
