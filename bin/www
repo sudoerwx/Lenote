@@ -27,6 +27,8 @@ var server = http.createServer(app);
 /**
  * Create Socket.IO server and connect sockets
  */
+//Setup WebSockets and add midleware
+var websockets = require("../sockets/websockets.js")(server);
 var io = require('socket.io')(server);
 var editFileSocket = require('../sockets/colaboration')(io);
 

@@ -44,8 +44,7 @@ app.use(bodyParser.text());
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Setup WebSockets and add midleware
-const websockets = require("./sockets/websockets.js");
+
 
 // login handler
 app.use("/auth", authRouter);

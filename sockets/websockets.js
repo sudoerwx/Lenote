@@ -12,14 +12,16 @@ const shareconn = share.connect();
 const WebSocket = require("ws");
 const WebSocketJSONStream = require("websocket-json-stream");
 
-const shareserver = http.createServer();
-const sharewss = new WebSocket.Server({ server: shareserver });
+//const shareserver = http.createServer();
+
+//shareserver.listen(4000);
+
+exports = module.exports = (shareserver)=> {
+  const sharewss = new WebSocket.Server({ server: shareserver });
 sharewss.on("connection", client =>
   share.listen(new WebSocketJSONStream(client))
 );
-shareserver.listen(4000);
-
-exports = module.exports;
+};
 
 exports.createFile = function(name, data) {
   var doc = shareconn.get("docs", name);
