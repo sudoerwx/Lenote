@@ -92,7 +92,7 @@ If not, we're probably already working on resolving the issue`)
 
 			ShareDB.types.register(otText.type)
 
-			const sharews = new WebSocket(`ws://${baseApiUrl.replace(/(:5000)?$/, '')}`)
+			const sharews = new WebSocket(`ws://${baseApiUrl}`)
 			const shareconn = new ShareDB.Connection(sharews)
 			const sharedoc = shareconn.get('docs', currentFile.nameHash)
 			/*
@@ -273,7 +273,7 @@ If not, we're probably already working on resolving the issue`)
 				for (let key in anchorMap) removeId(key)
 			}
 
-			const socket = io(`http://${baseApiUrl}`)
+			const socket = io(`http://${baseApiUrl}`,{transports: ['polling']})
 			socket.on('connect', () => {
 				socket.emit('joinRoom', currentFile.nameHash)
 
