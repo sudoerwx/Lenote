@@ -5,6 +5,7 @@
 	"dependencies": {
 		"codemirror": "^5.40.2",
 		"diff-match-patch": "^1.0.0",
+		"jest-dom": "^3.4.0",
 		"ot-text": "^1.0.2",
 		"prismjs": "^1.14.0",
 		"react": "^16.8.0",
@@ -13,7 +14,8 @@
 		"react-redux": "^5.0.7",
 		"react-router": "^4.3.1",
 		"react-router-dom": "^4.3.1",
-		"react-scripts": "^2.1.3",
+		"react-scripts": "^3.0.1",
+		"react-testing-library": "^7.0.1",
 		"redux": "^4.0.0",
 		"redux-thunk": "^2.2.0",
 		"sharedb": "^1.0.0-beta.17",
@@ -37,6 +39,7 @@
 	"lint": "eslint **/*.js",
 	"devDependencies": {
 		"eslint": "^5.6.0",
-		"eslint-plugin-react": "^7.12.4"
+		"eslint-plugin-react": "^7.12.4",
+		"redux-mock-store": "^1.5.3"
 	}
 }

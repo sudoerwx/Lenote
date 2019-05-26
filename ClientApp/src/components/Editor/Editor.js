@@ -41,7 +41,7 @@ const UserList = styled.ul`
 	}
 `
 
-const Editor = ({ user, setCmInstance, match, history }) => {
+export const Editor = ({ user, setCmInstance, match, history }) => {
 	const editorRef = useRef()
 	const userListRef = useRef()
 

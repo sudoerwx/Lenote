@@ -59,7 +59,7 @@ const GlobalStyle = createGlobalStyle`
 
 export const IsMobileContext = createContext()
 
-const App = ({ requestUserData }) => {
+export const App = ({ requestUserData }) => {
 	const mobileState = useState(matchMedia(mobileMediaQuery).matches)
 	const [mobileSidebarOpen, toggleMobileSidebar] = useState(false)
 
