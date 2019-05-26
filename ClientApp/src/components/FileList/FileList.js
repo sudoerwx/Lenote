@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
@@ -8,15 +8,14 @@ import CreateFileModal from './CreateFileModal'
 import { ReactComponent as DeleteIcon } from '../../icons/delete.svg'
 
 const Item = styled.div`
-	display: flex;
-	justify-content: space-between;
+	display: grid;
+	grid-template-columns: minmax(min-content, 1fr) 24px;
 	text-decoration: none;
 	background-color: ${({ hl }) => (hl ? 'var(--c-white-hl)' : 'transparent')};
 	border-left: ${({ hl }) => (hl ? '4px' : 0)} solid var(--c-blue-hl);
 	padding: 8px;
 	padding-left: ${({ hl }) => (hl ? '17px' : '21px')};
 	font-weight: 200;
-	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	color: var(--c-darkgrey-text);
@@ -33,6 +32,13 @@ const Item = styled.div`
 		fill: transparent;
 		pointer-events: none;
 		transition: fill 0.3s 0.1s;
+	}
+	@media (max-width: 1160px) {
+		padding-right: 24px;
+		svg {
+			fill: var(--c-red-hl);
+			pointer-events: auto;
+		}
 	}
 `
 
@@ -58,22 +64,27 @@ const Text = styled.p`
 	color: var(--c-grey-text);
 `
 
-const FileList = ({ user, createFile, deleteFile, match, history }) => {
+const FileList = ({ user, createFile, deleteFile, match, history, onOpenFile }) => {
 	const [createFileVisible, hideCreateFile, showCreateFile] = useModal()
 
 	const currentFile =
 		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
+
+	const onFileClick = useCallback(
+		nameHash => () => {
+			onOpenFile()
+			history.push(`/${nameHash}`)
+		},
+		[]
+	)
+
 	return (
 		<>
 			{!!user.ownFiles.length && (
 				<>
 					<Text>Own files</Text>
 					{user.ownFiles.map(({ name, nameHash }) => (
-						<Item
-							key={nameHash}
-							hl={nameHash === currentFile.nameHash}
-							onClick={() => history.push(`/${nameHash}`)}
-						>
+						<Item key={nameHash} hl={nameHash === currentFile.nameHash} onClick={onFileClick(nameHash)}>
 							{name}
 							<DeleteIcon
 								onClick={async e => {
@@ -90,11 +101,7 @@ const FileList = ({ user, createFile, deleteFile, match, history }) => {
 				<>
 					<Text>Other's files</Text>
 					{user.secondFiles.map(({ name, nameHash }) => (
-						<Item
-							key={nameHash}
-							hl={nameHash === currentFile.nameHash}
-							onClick={() => history.push(`/${nameHash}`)}
-						>
+						<Item key={nameHash} hl={nameHash === currentFile.nameHash} onClick={onFileClick(nameHash)}>
 							{name}
 							<DeleteIcon
 								onClick={async e => {

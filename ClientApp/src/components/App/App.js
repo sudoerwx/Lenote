@@ -70,7 +70,7 @@ const App = ({ requestUserData }) => {
 	return (
 		<IsMobileContext.Provider value={mobileState}>
 			<Toolbar toggleMobileSidebar={toggleMobileSidebar} />
-			<Sidebar mobileSidebarOpen={mobileSidebarOpen} />
+			<Sidebar mobileSidebarOpen={mobileSidebarOpen} toggleMobileSidebar={toggleMobileSidebar} />
 			<Paper mobileSidebarOpen={mobileSidebarOpen} />
 			<GlobalStyle />
 		</IsMobileContext.Provider>

@@ -14,6 +14,12 @@ const StyledButtons = styled.div`
 		margin: 15px;
 		cursor: pointer;
 	}
+	@media (max-width: 520px) {
+		justify-content: space-around;
+		svg:nth-of-type(6) {
+			break-after: always;
+		}
+	}
 `
 
 const Buttons = ({ editor, dark }) => (

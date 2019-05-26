@@ -20,9 +20,9 @@ const StyledSidebar = styled.div`
 	}
 `
 
-const Sidebar = ({ mobileSidebarOpen }) => (
+const Sidebar = ({ mobileSidebarOpen, toggleMobileSidebar }) => (
 	<StyledSidebar mobileSidebarOpen={mobileSidebarOpen}>
-		<FileList />
+		<FileList onOpenFile={toggleMobileSidebar} />
 	</StyledSidebar>
 )
 
