@@ -10,8 +10,6 @@ const passport = require("passport");
 const expressSession = require("express-session");
 const keys = require("./config/keys");
 
-
-
 // routers
 const filesRouter = require("./routes/files");
 const usersRouter = require("./routes/users");
@@ -24,17 +22,16 @@ db.setUPConnection();
 
 const app = express();
 app.use(
-	expressSession({
-		secret: keys.session.secret,
-		resave: false,
-		saveUninitialized: false,
-		cookie: { maxAge: 604800000 },
-		store: new (require("connect-mongo")(expressSession))({
-			url: keys.mongodb.dbURI
-		})
-	})
+  expressSession({
+    secret: keys.session.secret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 604800000 },
+    store: new (require("connect-mongo")(expressSession))({
+      url: keys.mongodb.dbURI
+    })
+  })
 );
-
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -43,8 +40,6 @@ app.use(cookieParser());
 app.use(bodyParser.text());
 app.use(passport.initialize());
 app.use(passport.session());
-
-
 
 // login handler
 app.use("/auth", authRouter);
@@ -61,18 +56,18 @@ app.use("/img", imageRouter);
 
 app.use(express.static(path.resolve(__dirname, "./ClientApp/build")));
 app.get("/*", (req, res) => {
-	res.sendFile(path.join(__dirname + "/ClientApp/build/index.html"));
+  res.sendFile(path.join(__dirname + "/ClientApp/build/index.html"));
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-	// set locals, only providing error in development
-	res.locals.message = err.message;
-	res.locals.error = req.app.get("env") === "development" ? err : {};
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
-	// render the error page
-	res.status(err.status || 500);
-	res.send(err.message);
+  // render the error page
+  res.status(err.status || 500);
+  res.send(err.message);
 });
 
 module.exports = app;
