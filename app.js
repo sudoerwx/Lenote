@@ -9,7 +9,7 @@ const passportSetup = require("./config/passport-setup");
 const passport = require("passport");
 const expressSession = require("express-session");
 const keys = require("./config/keys");
-
+const winston = require("winston")
 // routers
 const filesRouter = require("./routes/files");
 const usersRouter = require("./routes/users");
@@ -17,6 +17,24 @@ const authRouter = require("./routes/auth");
 const linkRouter = require("./routes/links");
 const imageRouter = require("./routes/images");
 const shareLinkHandler = require("./routes/shareLinkHandler");
+
+
+winston.createLogger({
+  level: "warn",
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: "YYYY-MM-DD HH:mm:ss"
+    }),
+    winston.format.printf(info => `[${info.timestamp}] ${info.stack}`)
+  ),
+  transports: [
+    new winston.transports.File({
+      filename: "./log/error.log",
+      handleExceptions: true
+    })
+  ],
+  exitOnError: false
+});
 
 db.setUPConnection();
 

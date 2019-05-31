@@ -41,6 +41,7 @@
     "sharedb-mongo": "^1.0.0-beta.8",
     "socket.io": "^2.1.1",
     "websocket-json-stream": "0.0.3",
+    "winston": "^3.2.1",
     "ws": "^6.1.2"
   },
   "devDependencies": {
