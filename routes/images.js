@@ -27,7 +27,7 @@ router.get("/:Hash", function(req, res) {
 router.post("/", upload.single("file"), function(req, res) {
   if (req.user) {
     Image.findOne({ _id: req.params.Hash }, { __v: 0 }, (err, currentImage) => {
-      if (err)
+    
         if (currentImage) {
           res.send(currentImage._id);
         } else {
