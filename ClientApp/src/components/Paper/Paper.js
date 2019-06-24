@@ -37,6 +37,9 @@ const MarkdownRenderWrapper = styled.div`
 	min-height: calc(100vh - 188px);
 	padding: 14px;
 	overflow-wrap: break-word;
+	img {
+		max-width: 100%;
+	}
 `
 
 const RenderButton = styled.div`
