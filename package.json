@@ -14,7 +14,7 @@
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
-    "codemirror": "^5.42.0",
+    "codemirror": "^5.58.2",
     "concurrently": "^4.0.1",
     "connect-mongo": "^2.0.1",
     "cookie-parser": "~1.4.3",
