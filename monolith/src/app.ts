@@ -1,22 +1,23 @@
-const createError = require("http-errors");
-const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
-const db = require("./database/db");
-const bodyParser = require("body-parser");
-const passportSetup = require("./config/passport-setup");
-const passport = require("passport");
-const expressSession = require("express-session");
-const keys = require("./config/keys");
-const winston = require("winston")
+import createError from "http-errors";
+import express from "express";
+import path from "path";
+import cookieParser from "cookie-parser";
+import logger from "morgan";
+import db from "./models/db";
+import bodyParser from "body-parser";
+import "./config/passport-setup";
+import passport from "passport";
+import expressSession from "express-session";
+import winston from "winston";
 // routers
-const filesRouter = require("./routes/files");
-const usersRouter = require("./routes/users");
-const authRouter = require("./routes/auth");
-const linkRouter = require("./routes/links");
-const imageRouter = require("./routes/images");
-const shareLinkHandler = require("./routes/shareLinkHandler");
+import filesRouter from "./routes/files";
+import usersRouter from "./routes/users";
+import authRouter from "./routes/auth";
+import linkRouter from "./routes/links";
+import imageRouter from "./routes/images";
+import shareLinkHandler from "./routes/shareLinkHandler";
+import errorHandler from './controllers/errorHandler'
+
 
 
 winston.createLogger({
@@ -41,12 +42,12 @@ db.setUPConnection();
 const app = express();
 app.use(
   expressSession({
-    secret: keys.session.secret,
+    secret: process?.env?.SESSION_SECRET||'',
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 604800000 },
     store: new (require("connect-mongo")(expressSession))({
-      url: keys.mongodb.dbURI
+      url: process?.env?.MONGODB_URI||''
     })
   })
 );
@@ -78,14 +79,6 @@ app.get("/*", (req, res) => {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+app.use(errorHandler);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.send(err.message);
-});
-
-module.exports = app;
+export default app;

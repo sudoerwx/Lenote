@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const md5 = require("md5");
-const websockets = require("../sockets/websockets.js");
-const User = require("../database/Schema/userSchema.js");
+import express from "express";
+import md5 from "md5";
+import websockets from "../sockets/websockets";
+import User from "../database/Schema/userSchema";
 
+const router = express.Router();
 /**
  * create file and  send all user file
  */
@@ -93,5 +93,4 @@ router.delete("/:file", function(req, res) {
 		res.sendStatus(401);
 	}
 });
-
-module.exports = router;
+export default router;

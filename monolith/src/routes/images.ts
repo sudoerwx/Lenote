@@ -1,10 +1,12 @@
-const express = require("express");
-const router = express.Router();
-const md5 = require("md5");
-const Image = require("../database/Schema/ImageSchema.js");
-const multer = require("multer");
+import express from "express";
+import md5 from "md5";
+import Image from "../database/Schema/ImageSchema";
+import multer from "multer";
+
+
 var storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+const router = express.Router();
 /**
  * send as answer Image
  */
@@ -47,4 +49,4 @@ router.post("/", upload.single("file"), function(req, res) {
   }
 });
 
-module.exports = router;
+export default router;

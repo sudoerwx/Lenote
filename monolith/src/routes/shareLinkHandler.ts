@@ -1,8 +1,10 @@
-const express = require("express");
+import express from "express";
+import md5 from "md5";
+import User from "../database/Schema/userSchema";
+import Link from "../database/Schema/shareLinkSchema";
+
 const router = express.Router();
-const md5 = require("md5");
-const User = require("../database/Schema/userSchema.js");
-const Link = require("../database/Schema/shareLinkSchema.js");
+
 router.get("/:nameHash", function(req, res) {
   if (req.user) {
     Link.findById(req.params.nameHash, (err, currentLink) => {
@@ -45,4 +47,4 @@ router.get("/:nameHash", function(req, res) {
   res.redirect(process.env.NODE_ENV ? "http://lenote.herokuapp.com/" : "http://localhost:3000/");
 });
 
-module.exports = router;
+export default router;

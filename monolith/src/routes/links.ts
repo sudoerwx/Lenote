@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
-const md5 = require("md5");
-const Link = require("../database/Schema/shareLinkSchema.js");
+import express from "express";
+import md5 from "md5";
+import Link from "../database/Schema/shareLinkSchema.js";
 
+const router = express.Router();
 /**
  * create link for sharing in DB and send as answer ro client
  */
@@ -62,4 +62,4 @@ router.delete("/:nameHash", function(req, res) {
     res.sendStatus(401);
   }
 });
-module.exports = router;
+export default router;

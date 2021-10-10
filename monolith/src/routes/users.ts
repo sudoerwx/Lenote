@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import users from "../database/Schema/userSchema";
+
 const router = express.Router();
-const users = require("../database/Schema/userSchema.js");
 
 /**
  * find user data in DB and send as answer
@@ -24,4 +25,5 @@ router.delete("/", function(req, res) {
     res.sendStatus(401);
   }
 });
-module.exports = router;
+
+export default router;

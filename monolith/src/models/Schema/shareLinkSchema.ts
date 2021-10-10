@@ -1,6 +1,8 @@
-const mongoose = require("mongoose");
-const userSchema = require("./userSchema");
+import mongoose from "mongoose";
+import userSchema from "./userSchema";
+
 const file = userSchema.file;
+
 const link = new mongoose.Schema({
 	_id: { type: String, required: true },
 	sharedFile: file,
@@ -8,4 +10,4 @@ const link = new mongoose.Schema({
 });
 const ShareLink = mongoose.model("link", link);
 
-module.exports = ShareLink;
+export default ShareLink;
