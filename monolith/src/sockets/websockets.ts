@@ -26,7 +26,8 @@ export const createFile: (name: string, data?: any) => void = (name, data) => {
   doc.fetch(function (err) {
     if (err) throw err;
     if (doc.type === null) {
-      doc.create(data || '#Hello');
+      // @ts-ignore
+      doc.create(data || '#Hello','text');
     }
   });
 };

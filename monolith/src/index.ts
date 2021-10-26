@@ -22,7 +22,7 @@ websockets(server);
 const debugInstance = debug('lenote:server');
 
 const io = socketIO(server, { transports: ['polling'] });
-// collaborationSockets(io);
+ collaborationSockets(io);
 
 /**
  * Normalize a port into a number, string, or false.

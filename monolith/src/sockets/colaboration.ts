@@ -1,35 +1,17 @@
 import expressSession from 'express-session';
-import { mongodb, session } from '../config/keys';
 import { authorize } from 'passport.socketio';
 import cookieParser from 'cookie-parser';
-
+import sessionMiddleware from '../utils/sessionMiddleware';
 import MongoStore from 'connect-mongo';
 import { Socket } from 'socket.io';
 
-const expressSessionConnect = expressSession({
-  secret: process?.env?.SESSION_SECRET || '',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 604800000 },
-  store: MongoStore.create({
-    mongoUrl: process?.env?.MONGODB_URI || '',
-  }),
-});
-
-const mongoStore = new expressSessionConnect({
-  url: mongodb.dbURI,
-});
 
 const collaboration: (io: any) => void = (io) => {
   //Access passport.js user information from a socket.io connection.
 
-  io.use(
-    authorize({
-      cookieParser: cookieParser, // the same middleware you registrer in express
-      secret: session.secret, // the session_secret to parse the cookie
-      store: mongoStore, // we NEED to use a sessionstore. no memorystore please
-    })
-  );
+  io.use((socket:Socket, next:()=>void) =>{
+    sessionMiddleware(socket.request, socket.request.res, next);
+});
 
   let anchors = {};
   let names = {};
@@ -40,20 +22,21 @@ const collaboration: (io: any) => void = (io) => {
     client.on('joinRoom', (room) => {
       roomName = room;
       client.join(room);
-
-      anchors = client.adapter.rooms[roomName].anchors
-        ? client.adapter.rooms[roomName].anchors
-        : (client.adapter.rooms[roomName].anchors = {});
-      names = client.adapter.rooms[roomName].names
-        ? client.adapter.rooms[roomName].names
-        : (client.adapter.rooms[roomName].names = {});
-
-      names[id] = client.request.user.photoURI;
+      // @ts-ignore
+      anchors = client.adapter.rooms[roomName]?.anchors||{}
+      // @ts-ignore
+      names = client.adapter.rooms[roomName]?.names||{}
+      // @ts-ignore
+      names[id] = client.request.user?.photoURI;
+      // @ts-ignore
       anchors[id] = [0, 0];
+
       io.to(roomName).emit('initialize', { anchors, names });
       io.to(roomName).emit('id-join', {
         id,
+        // @ts-ignore
         name: names[id],
+        // @ts-ignore
         anchor: anchors[id],
       });
     });
@@ -61,7 +44,9 @@ const collaboration: (io: any) => void = (io) => {
 
     client.on('anchor-update', (msg) => {
       // set anchors[id]
+       // @ts-ignore
       anchors[id] = msg;
+      // @ts-ignore
       io.to(roomName).emit('anchor-update', { id, anchor: anchors[id] });
     });
 
@@ -70,7 +55,9 @@ const collaboration: (io: any) => void = (io) => {
     // Mashing resfresh on a page seems to leave lingering
     // connections that eventually close
     client.on('disconnect', () => {
+      // @ts-ignore
       delete names[id];
+      // @ts-ignore
       delete anchors[id];
       io.to(roomName).emit('id-left', { id });
     });
