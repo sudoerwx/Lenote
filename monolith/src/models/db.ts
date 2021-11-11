@@ -4,8 +4,8 @@ import users from './Schema/userSchema';
 /**
  * setup mongoose connection
  */
-export const setUPConnection = () => {
-  mongoose.connect(process?.env?.MONGODB_URI || '', {
+export const setUPConnection = async (): Promise<void> => {
+  await mongoose.connect(process?.env?.MONGODB_URI || '', {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,

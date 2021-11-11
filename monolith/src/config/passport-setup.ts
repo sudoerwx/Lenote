@@ -3,7 +3,7 @@ import Google from 'passport-google-oauth20';
 import md5 from 'md5';
 import User from '../models/Schema/userSchema';
 import websockets from '../sockets/websockets';
-import { createFile } from '../sockets/websockets';
+import { createFile } from '../sockets/sharedbWs';
 
 const GoogleStrategy = Google.Strategy;
 

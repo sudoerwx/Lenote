@@ -5,13 +5,12 @@ import sessionMiddleware from '../utils/sessionMiddleware';
 import MongoStore from 'connect-mongo';
 import { Socket } from 'socket.io';
 
-
 const collaboration: (io: any) => void = (io) => {
   //Access passport.js user information from a socket.io connection.
 
-  io.use((socket:Socket, next:()=>void) =>{
+  io.use((socket: Socket, next: () => void) => {
     sessionMiddleware(socket.request, socket.request.res, next);
-});
+  });
 
   let anchors = {};
   let names = {};
@@ -19,13 +18,12 @@ const collaboration: (io: any) => void = (io) => {
     const id = client.id;
 
     let roomName = '';
-    client.on('joinRoom', (room) => {
-      roomName = room;
-      client.join(room);
+    client.on('joinRoom', (roomName) => {
+      client.join(roomName);
       // @ts-ignore
-      anchors = client.adapter.rooms[roomName]?.anchors||{}
+      anchors = client.adapter.rooms[roomName]?.anchors || {};
       // @ts-ignore
-      names = client.adapter.rooms[roomName]?.names||{}
+      names = client.adapter.rooms[roomName]?.names || {};
       // @ts-ignore
       names[id] = client.request.user?.photoURI;
       // @ts-ignore
@@ -42,25 +40,25 @@ const collaboration: (io: any) => void = (io) => {
     });
     // send client its id and anchor and names obj
 
-    client.on('anchor-update', (msg) => {
-      // set anchors[id]
-       // @ts-ignore
-      anchors[id] = msg;
-      // @ts-ignore
-      io.to(roomName).emit('anchor-update', { id, anchor: anchors[id] });
-    });
+    // client.on('anchor-update', (msg) => {
+    //   // set anchors[id]
+    //   // @ts-ignore
+    //   anchors[id] = msg;
+    //   // @ts-ignore
+    //   io.to(roomName).emit('anchor-update', { id, anchor: anchors[id] });
+    // });
 
     // Remove id info and update clients
     // TODO: This doesn't seem to always get called
     // Mashing resfresh on a page seems to leave lingering
     // connections that eventually close
-    client.on('disconnect', () => {
-      // @ts-ignore
-      delete names[id];
-      // @ts-ignore
-      delete anchors[id];
-      io.to(roomName).emit('id-left', { id });
-    });
+    // client.on('disconnect', () => {
+    //   // @ts-ignore
+    //   delete names[id];
+    //   // @ts-ignore
+    //   delete anchors[id];
+    //   io.to(roomName).emit('id-left', { id });
+    // });
   });
 };
 

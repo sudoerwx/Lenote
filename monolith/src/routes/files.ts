@@ -1,6 +1,6 @@
 import express from 'express';
 import md5 from 'md5';
-import { createFile, deleteFile } from '../sockets/websockets';
+import { createFile, deleteFile } from '../sockets/sharedbWs';
 import User from '../models/Schema/userSchema';
 
 const router = express.Router();

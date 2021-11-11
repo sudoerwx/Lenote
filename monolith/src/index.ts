@@ -7,22 +7,17 @@ config();
 import http from 'http';
 import app from './app';
 const debug = require('debug');
-import socketIO from 'socket.io';
-import collaborationSockets from './sockets/colaboration';
-import websockets from './sockets/websockets';
+// import socketIO from 'socket.io';
+// import collaborationSockets from './sockets/colaboration';
 
 /**
  * Create HTTP server.
  */
 
-const server = http.createServer(app);
-
-websockets(server);
-
 const debugInstance = debug('lenote:server');
 
-const io = socketIO(server, { transports: ['polling'] });
- collaborationSockets(io);
+// const io = socketIO(server, { transports: ['polling'] });
+// collaborationSockets(io);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -86,18 +81,16 @@ const onError = (error: any) => {
  * Event listener for HTTP server "listening" event.
  */
 
-const onListening = () => {
-  const addr = server.address();
-  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr?.port;
-  debugInstance('Listening on ' + bind);
+const onListening = (port: any) => {
+  debugInstance('Listening on ' + port);
 };
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port, function () {
+app.listen(port, function () {
   console.log('server is running on port ' + port);
 });
-server.on('error', onError);
-server.on('listening', onListening);
+app.on('error', onError);
+app.on('listening', onListening);

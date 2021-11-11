@@ -17,6 +17,9 @@ import imageRouter from './routes/images';
 import shareLinkHandler from './routes/shareLinkHandler';
 import errorHandler from './controllers/errorHandler';
 import sessionMiddleware from './utils/sessionMiddleware';
+import websockets from './sockets/websockets';
+import expressWs from 'express-ws';
+import sharedbWs from './sockets/sharedbWs';
 
 // winston.createLogger({
 //   level: 'warn',
@@ -37,7 +40,7 @@ import sessionMiddleware from './utils/sessionMiddleware';
 
 db.setUPConnection();
 
-const app = express();
+const { app } = expressWs(express());
 app.use(sessionMiddleware);
 
 app.use(logger('dev'));
@@ -47,6 +50,9 @@ app.use(cookieParser());
 app.use(bodyParser.text());
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.ws('/custom', websockets);
+app.ws('/sharedb', sharedbWs);
 
 // login handler
 app.use('/auth', authRouter);
