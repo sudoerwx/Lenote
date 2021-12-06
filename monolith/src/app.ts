@@ -51,7 +51,7 @@ app.use(bodyParser.text());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.ws('/custom', websockets);
+app.ws('/custom/:file', websockets);
 app.ws('/sharedb', sharedbWs);
 
 // login handler

@@ -89,81 +89,89 @@ If not, we're probably already working on resolving the issue`)
 		ShareDB.types.register(otText.type)
 
 		const sharews = new WebSocket(`ws://${baseApiUrl}/sharedb`)
-		const customws = new WebSocket(`ws://${baseApiUrl}/custom`)
-
+		const customws = new WebSocket(`ws://${baseApiUrl}/custom/${currentFile.nameHash}`)
+		// eslint-disable-next-line no-console
+		console.log(currentFile.nameHash)
 		const shareconn = new ShareDB.Connection(sharews)
 		const sharedoc = shareconn.get('docs', currentFile.nameHash)
 
-		const wsSend = (type, data) => customws.send(JSON.stringify({ type, data: data }))
-
+		const wsSend = (type, data) => customws.send(JSON.stringify({ type, data, room: currentFile.nameHash }))
 		customws.onopen = () => {
-			wsSend('joinRoom', currentFile.nameHash)
-		}
+			customws.onmessage = (msg) => {
+				const jsonMsg = JSON.parse(msg.data || '{}')
+				const { type, data, id: userId } = jsonMsg
+				// eslint-disable-next-line no-console
+				console.log('message', msg.data, type)
 
-		customws.onmessage = (msg) => {
-			const jsonMsg = JSON.parse(msg)
-			const { type, data, id: userId } = jsonMsg
-			switch (type) {
-				case 'initialize':
-					for (let id in data.anchors) userId !== id && setAnchor(id, data.anchors[id])
-					for (let id in data.names) {
-						userId !== id && addName(id, data.names[id])
-					}
-					break
+				switch (type) {
+					case 'initialize':
+						for (let id in data.anchors) {
+							// eslint-disable-next-line no-console
+							console.log('init anh', id)
 
-				case 'anchor-update':
-					if (userId === data.id) return
-					setAnchor(data.id, data.anchor)
-					break
+							if (+userId !== +id) setAnchor(id, data.anchors[id])
+						}
+						for (let id in data.names) {
+							// eslint-disable-next-line no-console
+							console.log('init name', id)
 
-				case 'id-join':
-					if (userId === data.id) return
-					addName(data.id, data.name)
-					setAnchor(data.id, data.anchor)
-					break
+							if (+userId !== +id) addName(id, data.names[id])
+						}
+						break
 
-				case 'id-left':
-					if (userId === data.id) return
-					removeId(data.id)
-					break
+					case 'anchor-update':
+						if (+userId === +data.id) return
+						setAnchor(data.id, data.anchor)
+						break
 
-				default:
+					case 'id-join':
+						if (+userId === +data.id) return
+						addName(data.id, data.name)
+						setAnchor(data.id, data.anchor)
+						break
+
+					case 'id-left':
+						if (+userId === +data.id) return
+						removeId(data.id)
+						break
+
+					default:
+				}
 			}
-		}
 
-		customws.ondisconnect = () => clearAll()
+			customws.onclose = () => clearAll()
 
-		//		// const socket = io(`http://${baseApiUrl}`, { transports: ['polling'] })
-		// socket.on('connect', () => {
-		// 	wsSend('joinRoom', currentFile.nameHash)
+			//		// const socket = io(`http://${baseApiUrl}`, { transports: ['polling'] })
+			// socket.on('connect', () => {
+			// 	wsSend('join-room', currentFile.nameHash)
 
-		// 	socket.on('disconnect', () => clearAll())
+			// 	socket.on('disconnect', () => clearAll())
 
-		// 	socket.once('initialize', (e) => {
-		// 		for (let id in e.anchors) socket.id !== id && setAnchor(id, e.anchors[id])
-		// 		for (let id in e.names) {
-		// 			socket.id !== id && addName(id, e.names[id])
-		// 		}
-		// 	})
-		// 	socket.on('anchor-update', (e) => {
-		// 		if (socket.id === e.id) return
+			// 	socket.once('initialize', (e) => {
+			// 		for (let id in e.anchors) socket.id !== id && setAnchor(id, e.anchors[id])
+			// 		for (let id in e.names) {
+			// 			socket.id !== id && addName(id, e.names[id])
+			// 		}
+			// 	})
+			// 	socket.on('anchor-update', (e) => {
+			// 		if (socket.id === e.id) return
 
-		// 		setAnchor(e.id, e.anchor)
-		// 	})
-		// 	socket.on('id-join', (e) => {
-		// 		if (socket.id === e.id) return
+			// 		setAnchor(e.id, e.anchor)
+			// 	})
+			// 	socket.on('id-join', (e) => {
+			// 		if (socket.id === e.id) return
 
-		// 		addName(e.id, e.name)
-		// 		setAnchor(e.id, e.anchor)
-		// 	})
-		// 	socket.on('id-left', (e) => {
-		// 		if (socket.id === e.id) return
+			// 		addName(e.id, e.name)
+			// 		setAnchor(e.id, e.anchor)
+			// 	})
+			// 	socket.on('id-left', (e) => {
+			// 		if (socket.id === e.id) return
 
-		// 		removeId(e.id)
-		// 	})
-		// })
+			// 		removeId(e.id)
+			// 	})
+			// })
 
-		/*
+			/*
             sharedoc.fetch(function(err) {
                 if (err) throw err
                 console.log('asdf', sharedoc.type)
@@ -172,78 +180,81 @@ If not, we're probably already working on resolving the issue`)
                 }
             })
             */
-		codeMirror.on('change', (ed, chg) => {
-			if (stopWatch) return
+			codeMirror.on('change', (ed, chg) => {
+				if (stopWatch) return
 
-			const stindex = ed.indexFromPos(chg.from)
-			const delta = chg.removed.join('\n').length
-			const addedText = chg.text.join('\n')
+				const stindex = ed.indexFromPos(chg.from)
+				const delta = chg.removed.join('\n').length
+				const addedText = chg.text.join('\n')
 
-			try {
-				if (delta) sharedoc.submitOp([stindex, { d: delta }])
-				if (addedText) sharedoc.submitOp([stindex, addedText])
-			} catch (err) {
-				console.error(err)
-				history.push('/404')
-			}
-		})
+				try {
+					if (delta) sharedoc.submitOp([stindex, { d: delta }])
+					if (addedText) sharedoc.submitOp([stindex, addedText])
+				} catch (err) {
+					console.error(err)
+					history.push('/404')
+				}
+			})
 
-		codeMirror.on('cursorActivity', () => {
-			const stPos = codeMirror.getCursor('start')
-			const edPos = codeMirror.getCursor('end')
-			const hdPos = codeMirror.getCursor('head')
+			codeMirror.on('cursorActivity', () => {
+				const stPos = codeMirror.getCursor('start')
+				const edPos = codeMirror.getCursor('end')
+				const hdPos = codeMirror.getCursor('head')
 
-			const stindex = codeMirror.indexFromPos(stPos)
-			const edindex = codeMirror.indexFromPos(edPos)
-			const hdindex = codeMirror.indexFromPos(hdPos)
-			const prefixed = hdindex === stindex && stindex !== edindex
+				const stindex = codeMirror.indexFromPos(stPos)
+				const edindex = codeMirror.indexFromPos(edPos)
+				const hdindex = codeMirror.indexFromPos(hdPos)
+				const prefixed = hdindex === stindex && stindex !== edindex
 
-			wsSend('anchor-update', { stindex, edindex, prefixed })
-		})
+				wsSend('anchor-update', { stindex, edindex, prefixed })
+			})
 
-		sharedoc.subscribe(() => {
-			stopWatch = true
-
-			codeMirror.setValue(sharedoc.data || '')
-			codeMirror.setCursor(0, 0)
-			codeMirror.focus()
-			stopWatch = false
-		})
-
-		sharedoc.on('op', (op, mine) => {
-			if (mine) return
-			const index = op.length === 2 ? op[0] : 0
-			const data = op.length === 2 ? op[1] : op[0]
-
-			if (typeof data === 'string') {
-				const pos = codeMirror.posFromIndex(index)
-
+			sharedoc.subscribe(() => {
 				stopWatch = true
-				codeMirror.replaceRange(data, pos, pos)
+
+				codeMirror.setValue(sharedoc.data || '')
+				codeMirror.setCursor(0, 0)
+				codeMirror.focus()
 				stopWatch = false
-			} else {
-				const delCt = data.d
-				const stPos = codeMirror.posFromIndex(index)
-				const edPos = codeMirror.posFromIndex(index + delCt)
-				// const range = { start: stPos, end: edPos }
+			})
 
-				stopWatch = true
-				codeMirror.replaceRange('', stPos, edPos)
-				stopWatch = false
-			}
-		})
+			sharedoc.on('op', (op, mine) => {
+				if (mine) return
+				const index = op.length === 2 ? op[0] : 0
+				const data = op.length === 2 ? op[1] : op[0]
 
-		const addName = (id, photoURL) => {
-			const userslist = userListRef.current
-			const usericon = document.createElement('li')
-			usericon.classList.add(`u-${id}`)
-			usericon.innerHTML = `<img src="${photoURL}" alt="" />`
-			userslist.appendChild(usericon)
+				if (typeof data === 'string') {
+					const pos = codeMirror.posFromIndex(index)
 
-			const color = idToColor(id)
-			const styleTag = document.createElement('style')
-			styleTag.id = `style-${id}`
-			styleTag.innerHTML = `
+					stopWatch = true
+					codeMirror.replaceRange(data, pos, pos)
+					stopWatch = false
+				} else {
+					const delCt = data.d
+					const stPos = codeMirror.posFromIndex(index)
+					const edPos = codeMirror.posFromIndex(index + delCt)
+					// const range = { start: stPos, end: edPos }
+
+					stopWatch = true
+					codeMirror.replaceRange('', stPos, edPos)
+					stopWatch = false
+				}
+			})
+
+			const addName = (id, photoURL) => {
+				// eslint-disable-next-line no-console
+				console.log('set name', id, photoURL)
+
+				const userslist = userListRef.current
+				const usericon = document.createElement('li')
+				usericon.classList.add(`u-${id}`)
+				usericon.innerHTML = `<img src="${photoURL}" alt="" />`
+				userslist.appendChild(usericon)
+
+				const color = idToColor(id)
+				const styleTag = document.createElement('style')
+				styleTag.id = `style-${id}`
+				styleTag.innerHTML = `
                 .CodeMirror-line .u-${id}                   { background-color: ${hexToRgbaStyle(color, 0.35)}; }
                 .CodeMirror-line .u-${id}.cursor            { opacity: 1; }
                 .CodeMirror-line .u-${id}.cursor.left       { border-left: 2px solid ${color}; }
@@ -251,100 +262,105 @@ If not, we're probably already working on resolving the issue`)
                 .CodeMirror-line .u-${id}.empty             { background-color: transparent; }
 
             `
-			document.querySelector('head').appendChild(styleTag)
-		}
-
-		const anchorMap = {}
-		const setAnchor = (id, anchor) => {
-			if (id in anchorMap) {
-				anchorMap[id].forEach((m) => m.clear())
-				delete anchorMap[id]
+				document.querySelector('head').appendChild(styleTag)
 			}
 
-			// Whether or not the cursor is actually at the beginning
-			// or end of the selection
-			let emptyClass = ''
-			let stindex = anchor.stindex
-			const edindex = anchor.edindex
+			const anchorMap = {}
+			const setAnchor = (id, anchor) => {
+				// eslint-disable-next-line no-console
+				console.log('set anch', id, anchor)
 
-			// Add selection
-			let stPos, edPos
-			anchorMap[id] = []
+				if (id in anchorMap) {
+					anchorMap[id].forEach((m) => m.clear())
+					delete anchorMap[id]
+				}
 
-			if (stindex !== edindex) {
-				stPos = codeMirror.posFromIndex(stindex)
-				edPos = codeMirror.posFromIndex(edindex)
+				// Whether or not the cursor is actually at the beginning
+				// or end of the selection
+				let emptyClass = ''
+				let stindex = anchor.stindex
+				const edindex = anchor.edindex
 
-				anchorMap[id].push(codeMirror.markText(stPos, edPos, { className: `u-${id}` }))
+				// Add selection
+				let stPos, edPos
+				anchorMap[id] = []
+
+				if (stindex !== edindex) {
+					stPos = codeMirror.posFromIndex(stindex)
+					edPos = codeMirror.posFromIndex(edindex)
+
+					anchorMap[id].push(codeMirror.markText(stPos, edPos, { className: `u-${id}` }))
+				}
+
+				if (stindex === edindex) {
+					stindex = Math.max(0, stindex - 1)
+					emptyClass = 'empty'
+				}
+
+				// Add cursor
+				const index = anchor.prefixed ? stindex : edindex
+				stPos = codeMirror.posFromIndex(index + (anchor.prefixed ? 0 : -1))
+				edPos = codeMirror.posFromIndex(index + (anchor.prefixed ? 1 : 0))
+
+				anchorMap[id].push(
+					codeMirror.markText(stPos, edPos, {
+						className: `u-${id} ${emptyClass} cursor ${anchor.prefixed ? 'left' : 'right'}`,
+					})
+				)
 			}
 
-			if (stindex === edindex) {
-				stindex = Math.max(0, stindex - 1)
-				emptyClass = 'empty'
+			const removeId = (id) => {
+				userListRef.current.querySelector(`li.u-${id}`).remove()
+				document.querySelector(`#style-${id}`).remove()
+				if (id in anchorMap) {
+					anchorMap[id].forEach((m) => m.clear())
+					delete anchorMap[id]
+				}
 			}
 
-			// Add cursor
-			const index = anchor.prefixed ? stindex : edindex
-			stPos = codeMirror.posFromIndex(index + (anchor.prefixed ? 0 : -1))
-			edPos = codeMirror.posFromIndex(index + (anchor.prefixed ? 1 : 0))
+			const idToColor = (id) => {
+				let total = 0
+				for (let c of id) total += c.charCodeAt(0)
 
-			anchorMap[id].push(
-				codeMirror.markText(stPos, edPos, {
-					className: `u-${id} ${emptyClass} cursor ${anchor.prefixed ? 'left' : 'right'}`,
-				})
-			)
-		}
+				let hex = total.toString(16)
+				while (hex.length < 3) hex += hex[hex.length - 1]
+				hex = hex.substr(0, 3)
 
-		const removeId = (id) => {
-			userListRef.current.querySelector(`li.u-${id}`).remove()
-			document.querySelector(`#style-${id}`).remove()
-			if (id in anchorMap) {
-				anchorMap[id].forEach((m) => m.clear())
-				delete anchorMap[id]
-			}
-		}
+				let color = '#'
+				for (let c of hex) color += `${c}0`
 
-		const idToColor = (id) => {
-			let total = 0
-			for (let c of id) total += c.charCodeAt(0)
-
-			let hex = total.toString(16)
-			while (hex.length < 3) hex += hex[hex.length - 1]
-			hex = hex.substr(0, 3)
-
-			let color = '#'
-			for (let c of hex) color += `${c}0`
-
-			return color
-		}
-
-		const hexToRgbaStyle = (hex, opacity) => {
-			hex = hex.replace('#', '')
-			let r, g, b
-			if (hex.length === 3) {
-				r = hex[0] + hex[0]
-				g = hex[1] + hex[1]
-				b = hex[2] + hex[2]
-			} else {
-				r = hex.substr(0, 2)
-				g = hex.substr(2, 2)
-				b = hex.substr(4, 2)
+				return color
 			}
 
-			r = parseInt(r, 16)
-			g = parseInt(g, 16)
-			b = parseInt(b, 16)
+			const hexToRgbaStyle = (hex, opacity) => {
+				hex = hex.replace('#', '')
+				let r, g, b
+				if (hex.length === 3) {
+					r = hex[0] + hex[0]
+					g = hex[1] + hex[1]
+					b = hex[2] + hex[2]
+				} else {
+					r = hex.substr(0, 2)
+					g = hex.substr(2, 2)
+					b = hex.substr(4, 2)
+				}
 
-			return `rgba(${r},${g},${b},${opacity})`
-		}
+				r = parseInt(r, 16)
+				g = parseInt(g, 16)
+				b = parseInt(b, 16)
 
-		const clearAll = () => {
-			for (let key in anchorMap) removeId(key)
+				return `rgba(${r},${g},${b},${opacity})`
+			}
+
+			const clearAll = () => {
+				for (let key in anchorMap) removeId(key)
+			}
 		}
 
 		return () => {
 			sharedoc.destroy()
 			codeMirror.toTextArea()
+			customws.close()
 		}
 	}, [currentFile.nameHash])
 

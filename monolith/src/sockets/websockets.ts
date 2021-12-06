@@ -1,68 +1,83 @@
-let anchors = {};
-let names = {};
+
+const rooms: { [room: string]: any } = {};
 
 const websockets = (ws: any, req: any): void => {
-     // @ts-ignore
-    const user = req.user;
-    const id = user.id;
+  
+  const file = req.params.file;
 
-  const emit = (type: string, data: any) => ws.emit({ type, data,id });
+  // @ts-ignore
+  const user = req.user;
+  const id = user.id;
+
+  const leave = () => {
+    console.log("delete",rooms)
+    // not present: do nothing
+    if (!rooms[file]?.[id]) return;
+
+    // if the one exiting is the last one, destroy the room
+    if (Object.keys(rooms[file]).length === 3) delete rooms[file]
+    else {
+      delete rooms[file][id];
+      delete rooms[file].anchors[id];
+      delete rooms[file].names[id];
+    }
+       emit('id-left', { id });
+
+  };
+
+   if (!rooms[file]) rooms[file] = { anchors: {}, names: {} }; // create the room
+  if (!rooms[file][id]) rooms[file][id] = ws; // join the room
+  console.log('join', file);
+
+
+  rooms[file].names[id] = user?.photoURI;
+  // @ts-ignore
+  rooms[file].anchors[id] = [0, 0];
+
+  const emit = (type: string, data: any) =>
+  Object.entries(rooms[file] ?? {}).filter(([key])=>key!=="anchors"&&key!=='names').forEach(([key, sock]:[any,typeof ws]) =>{
+    console.log("sent ",file,type);
+    sock.send(JSON.stringify({ type, data, id:key }))}
+    );
+
+ 
+
+
+  emit('initialize', { anchors:rooms[file].anchors, names:rooms[file].names });
+//   emit('id-join', {
+//     id,
+//     // @ts-ignore
+//     name: rooms[file].names[id],
+//     // @ts-ignore
+//     anchor: rooms[file].anchors[id],
+//   });
 
   ws.on('message', (msg: any) => {
     const jsonMsg = JSON.parse(msg);
-    const { type, data } = jsonMsg;
+    const { type, data, room } = jsonMsg;
 
- 
-    console.log('message', { type, data });
+    console.log('message', { type});
 
     switch (type) {
-      case 'join-room':
-        // // client.join(roomName);
-        // // @ts-ignore
-        // anchors = client.adapter.rooms[roomName]?.anchors || {};
-        // // @ts-ignore
-        // names = client.adapter.rooms[roomName]?.names || {};
-        // @ts-ignore
-        names[id] = user?.photoURI;
-        // @ts-ignore
-        anchors[id] = [0, 0];
-
-        emit('initialize', { anchors, names });
-        emit('id-join', {
-          id,
-          // @ts-ignore
-          name: names[id],
-          // @ts-ignore
-          anchor: anchors[id],
-        });
-        // io.to(roomName).emit('initialize', { anchors, names });
-        // io.to(roomName).emit('id-join', {
-        //   id,
-        //   // @ts-ignore
-        //   name: names[id],
-        //   // @ts-ignore
-        //   anchor: anchors[id],
-        // });
-        break;
-
+   
       case 'anchor-update':
         // set anchors[id]
         // @ts-ignore
-        anchors[id] = data;
+        rooms[file].anchors[id] = data;
         // @ts-ignore
         // io.to(roomName).emit('anchor-update', { id, anchor: anchors[id] });
-        emit('anchor-update', { id, anchor: anchors[id] });
+        emit('anchor-update', { id, anchor: rooms[file].anchors[id] });
 
         break;
     }
   });
 
-  ws.on('disconnect', () => {
-    // @ts-ignore
-    delete names[id];
-    // @ts-ignore
-    delete anchors[id];
+  ws.on('close', () => {
+    console.log("disconnect");
+    leave()
   });
-};
+
+
+ };
 
 export default websockets;
