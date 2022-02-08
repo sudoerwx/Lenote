@@ -1,6 +1,6 @@
 import express from 'express';
 import users from '../models/Schema/userSchema';
-
+import userStatistics  from "../controllers/userStatistics"
 const router = express.Router();
 
 /**
@@ -25,5 +25,7 @@ router.delete('/', function (req, res) {
     res.sendStatus(401);
   }
 });
+
+router.get('/statistics',userStatistics)
 
 export default router;

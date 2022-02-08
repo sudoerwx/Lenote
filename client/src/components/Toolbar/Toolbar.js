@@ -119,7 +119,7 @@ const Toolbar = ({ user, codeMirror, logout, toggleMobileSidebar, match, history
 	)
 
 	const currentFile =
-		[...user.ownFiles, ...user.secondFiles].find(file => file.nameHash === match.params.nameHash) || {}
+		[...user.ownFiles, ...user.secondFiles].find((file) => file.nameHash === match.params.nameHash) || {}
 
 	return (
 		<StyledToolbar>
@@ -128,7 +128,7 @@ const Toolbar = ({ user, codeMirror, logout, toggleMobileSidebar, match, history
 					{isMobile && (
 						<BurgerButton
 							fill="var(--c-lightgrey-text)"
-							onClick={() => toggleMobileSidebar(prevState => !prevState)}
+							onClick={() => toggleMobileSidebar((prevState) => !prevState)}
 						/>
 					)}
 					<Menu OptionsContainer={MenuButtonsContainer}>
@@ -179,9 +179,4 @@ const mapStateToProps = ({ user, editor: { codeMirror } }) => ({ user, codeMirro
 
 const mapDispatchToProps = { logout }
 
-export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(Toolbar)
-)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Toolbar))

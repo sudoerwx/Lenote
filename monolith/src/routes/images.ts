@@ -17,6 +17,7 @@ router.get('/:Hash', async (req, res) => {
 
   if (!currentImage) {
     res.sendStatus(204);
+    return;
   }
   currentImage.createdAt = Date.now();
   currentImage.save();

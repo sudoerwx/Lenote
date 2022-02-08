@@ -63,10 +63,6 @@ export const App = ({ requestUserData }) => {
 	const mobileState = useState(matchMedia(mobileMediaQuery).matches)
 	const [mobileSidebarOpen, toggleMobileSidebar] = useState(false)
 
-	useEffect(() => {
-		requestUserData()
-	}, [])
-
 	return (
 		<IsMobileContext.Provider value={mobileState}>
 			<Toolbar toggleMobileSidebar={toggleMobileSidebar} />
@@ -79,7 +75,4 @@ export const App = ({ requestUserData }) => {
 
 const mapDispatchToProps = { requestUserData }
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(App)
+export default connect(null, mapDispatchToProps)(App)

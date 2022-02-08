@@ -3,28 +3,28 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
-		"codemirror": "^5.40.2",
-		"diff-match-patch": "^1.0.0",
+		"codemirror": "^5.65.1",
+		"diff-match-patch": "^1.0.5",
 		"jest-dom": "^3.4.0",
 		"ot-text": "^1.0.2",
-		"prismjs": "^1.14.0",
-		"react": "^16.8.0",
-		"react-dom": "^16.8.0",
-		"react-markdown": "^4.0.6",
-		"react-redux": "^5.0.7",
-		"react-router": "^4.3.1",
-		"react-router-dom": "^4.3.1",
-		"react-scripts": "^3.0.1",
+		"prismjs": "^1.26.0",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"react-markdown": "^8.0.0",
+		"react-redux": "^7.2.6",
+		"react-router": "^6.2.1",
+		"react-router-dom": "5.0",
+		"react-scripts": "^5.0.0",
 		"react-testing-library": "^7.0.1",
-		"redux": "^4.0.0",
-		"redux-thunk": "^2.2.0",
-		"sharedb": "^1.0.0-beta.17",
-		"socket.io-client": "^2.2.0",
-		"styled-components": "^4.1.1"
+		"redux": "^4.1.2",
+		"redux-thunk": "^2.4.1",
+		"sharedb": "^2.2.5",
+		"socket.io-client": "^4.4.1",
+		"styled-components": "^5.3.3"
 	},
 	"scripts": {
-		"start": "react-scripts start",
-		"build": "react-scripts build",
+		"start": "ESLINT_NO_DEV_ERRORS='true' react-scripts start",
+		"build": "DISABLE_ESLINT_PLUGIN='true' react-scripts build",
 		"test": "react-scripts test --env=jsdom",
 		"eject": "react-scripts eject"
 	},
@@ -38,8 +38,9 @@
 	],
 	"lint": "eslint **/*.js",
 	"devDependencies": {
-		"eslint": "^5.6.0",
-		"eslint-plugin-react": "^7.12.4",
-		"redux-mock-store": "^1.5.3"
+		"eslint": "^8.8.0",
+		"eslint-plugin-react": "^7.28.0",
+		"react-error-overlay": "^6.0.10",
+		"redux-mock-store": "^1.5.4"
 	}
 }
