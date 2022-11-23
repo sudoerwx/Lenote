@@ -39,7 +39,7 @@
     "path": "^0.12.7",
     "sharedb": "^1.0.0-beta.18",
     "sharedb-mongo": "^1.0.0-beta.8",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.5.0",
     "websocket-json-stream": "0.0.3",
     "winston": "^3.2.1",
     "ws": "^6.2.2"
